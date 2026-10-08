@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="description" content="Spiegamelo: crea guide passo-passo con foto e un cerchio rosso su dove toccare, per qualsiasi app o schermata (SPID, app IO, banca, Fascicolo Sanitario, TV…). Si inviano come file e funzionano anche offline.">
+<title>Spiegamelo – guide facili per chi ami</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='%23ff6b6b' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='8' fill='white'/%3E%3C/svg%3E">
+<style>
+:root{
+  --pri:#0f766e; --pri-d:#115e59; --pri-l:#ccfbf1; --acc:#f59f00; --red:#e03131;
+  --bg:#f6f4ef; --card:#fff; --ink:#1f2933; --mute:#55606b; --line:#e4e0d6;
+  --r:16px; --sh:0 2px 10px rgba(31,41,51,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Noto Sans Arabic","Geeza Pro","Noto Sans CJK SC","Noto Serif CJK SC","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;-webkit-tap-highlight-color:transparent}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 120px}
+header.top{background:var(--pri);color:#fff;padding:18px 16px 22px;border-radius:0 0 24px 24px;box-shadow:var(--sh)}
+header.top .in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:14px;background:#fff1;display:grid;place-items:center;flex:none}
+.logo svg{width:34px;height:34px}
+header h1{margin:0;font-size:1.5rem;letter-spacing:-.01em}
+header p{margin:2px 0 0;opacity:.9;font-size:.95rem}
+.hero{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:18px;margin:18px 0}
+.hero h2{margin:0 0 6px;font-size:1.2rem}
+.hero ol{margin:8px 0 0;padding-left:22px;color:var(--mute)}
+.hero ol li{margin:3px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:600;background:var(--pri-l);color:var(--pri-d);display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:46px;transition:transform .06s,filter .15s}
+.btn:active{transform:scale(.97)}
+.btn:hover{filter:brightness(.97)}
+.btn.pri{background:var(--pri);color:#fff}
+.btn.acc{background:var(--acc);color:#2b1d00}
+.btn.ghost{background:transparent;color:var(--mute);border:1px solid var(--line)}
+.btn.danger{background:#fff0f0;color:#c92a2a}
+.btn.sm{padding:8px 12px;min-height:44px;font-size:.92rem;border-radius:10px}
+.btn.big{font-size:1.08rem;padding:14px 20px;min-height:54px}
+.btn.block{width:100%}
+h3.sec{margin:26px 4px 10px;font-size:1.05rem;color:var(--mute);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.guides{display:grid;gap:14px}
+.gcard{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
+.gcard .gtop{display:flex;gap:14px;padding:14px;align-items:center}
+.thumb{width:64px;height:84px;border-radius:10px;background:#eef2f1 center/cover no-repeat;flex:none;border:1px solid var(--line);display:grid;place-items:center;font-size:28px}
+.gcard h4{margin:0;font-size:1.08rem}
+.gcard .meta{color:var(--mute);font-size:.9rem;margin-top:2px}
+.gcard .acts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+.gcard .acts button{background:none;border:0;padding:12px 4px;font-size:.88rem;font-weight:600;color:var(--pri-d);display:flex;flex-direction:column;align-items:center;gap:2px}
+.gcard .acts button span{font-size:1.25rem}
+.gcard .acts button+button{border-left:1px solid var(--line)}
+.empty{text-align:center;color:var(--mute);padding:30px 10px}
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 6px 18px rgba(15,118,110,.35)}
+/* editor */
+.ebar{position:sticky;top:0;z-index:15;background:var(--bg);padding:10px 0;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--line)}
+.ebar .grow{flex:1}
+.saved{font-size:.85rem;color:var(--mute)}
+.field{display:block;margin:12px 0}
+.field label{display:block;font-weight:600;font-size:.92rem;margin-bottom:5px}
+.field small{color:var(--mute);font-weight:400}
+.inp{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;font-size:1rem;outline:none}
+.inp:focus{border-color:var(--pri)}
+textarea.inp{min-height:84px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:16px;margin:14px 0}
+.step{position:relative}
+.step .shead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.num{width:34px;height:34px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+.step .shead .grow{flex:1;font-weight:700}
+.ic{border:0;background:#f1efe9;border-radius:10px;width:44px;height:44px;font-size:1.05rem;display:grid;place-items:center;flex:none}
+.ic:disabled{opacity:.35}
+.imgbox{position:relative;border-radius:12px;overflow:hidden;background:#eef2f1;border:2px dashed #c8d3d1;min-height:150px;display:flex;align-items:center;justify-content:center}
+.imgbox.has{border-style:solid;border-color:var(--line);background:#111;cursor:crosshair}
+.imgbox .stage{position:relative;display:inline-block;max-width:100%;line-height:0}
+.imgbox img{max-width:100%;max-height:440px;display:block}
+.imgbox .add{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px;color:var(--mute);text-align:center}
+.mark{position:absolute;width:max(34px,13%);aspect-ratio:1;transform:translate(-50%,-50%);border:5px solid var(--red);border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 12px rgba(0,0,0,.5);pointer-events:none;animation:pulse 1.4s ease-in-out infinite}
+.mark::after{content:"";position:absolute;inset:30%;background:var(--red);border-radius:50%;opacity:.55}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.hint{font-size:.86rem;color:var(--mute);margin:6px 2px 0}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(15,23,30,.55);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px calc(24px + env(safe-area-inset-bottom))}
+@media (min-width:700px){.modal{align-items:center}.sheet{border-radius:22px}}
+.sheet h2{margin:4px 0 12px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}
+.pills span{background:var(--pri-l);color:var(--pri-d);border-radius:999px;padding:4px 10px;font-size:.82rem;font-weight:600}
+.langrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-weight:600;font-size:.92rem}
+.seg{display:flex;flex-wrap:wrap;gap:6px;max-width:100%;padding:2px;flex:1 1 100%}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:none;min-height:44px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.seg button i{font-style:normal;font-size:.7rem;font-weight:800;background:#e9e5db;color:var(--mute);border-radius:6px;padding:2px 5px}
+.seg button.on i{background:#ffffff33;color:#fff}
+.seg button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 24px 6px 2px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;min-height:44px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;font-size:.88rem;white-space:nowrap}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.tgh{margin:14px 2px 2px;font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.tpl .lng{margin-left:auto;font-size:.75rem;color:var(--mute);flex:none}
+.tpl{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px;margin:8px 0}
+.tpl:hover{border-color:var(--pri)}
+.tpl .e{font-size:1.8rem;width:44px;text-align:center}
+.tpl b{display:block}
+.tpl small{color:var(--mute)}
+.player{position:fixed;inset:0;z-index:60;background:#1f2933;display:none;flex-direction:column}
+.player.on{display:flex}
+.player .pbar{display:flex;align-items:center;gap:10px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;color:#fff;font-size:.9rem}
+.player .pbar span{flex:1;opacity:.85}
+.player iframe{border:0;width:100%;flex:1;background:#fff}
+.player .close{background:#ffffff22;color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:700}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:#1f2933;color:#fff;padding:12px 18px;border-radius:12px;opacity:0;transition:.25s;z-index:80;max-width:90vw;text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.hide{display:none!important}
+footer{color:var(--mute);font-size:.88rem;text-align:center;margin-top:30px}
+.linkbtn{background:none;border:0;color:var(--pri-d);font-weight:700;text-decoration:underline;min-height:44px;padding:8px 12px;font-size:.95rem}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.inp:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+body.lock{overflow:hidden}
+/* header: musica e info */
+header.top .in{flex-wrap:wrap}
+.ht{flex:1;min-width:0}
+.hacts{display:flex;gap:8px;flex:none;align-items:center}
+.hbtn{background:#ffffff1f;color:#fff;border:1.5px solid #ffffff66;border-radius:999px;min-height:44px;padding:8px 14px;font-weight:700;font-size:.95rem;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background .2s,color .2s}
+.hbtn b{font-weight:800;background:#00000026;border-radius:999px;padding:1px 8px;font-size:.8rem}
+.hbtn[aria-pressed="true"]{background:#fff;color:var(--pri-d);border-color:#fff}
+.hbtn[aria-pressed="true"] b{background:var(--pri-l)}
+.hbtn[aria-pressed="true"] .eq{display:inline-flex}
+.eq{display:none;gap:2px;align-items:flex-end;height:14px}
+.eq i{width:3px;background:currentColor;border-radius:2px;height:5px;animation:eq 1.2s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}
+@keyframes eq{0%,100%{height:4px}50%{height:13px}}
+@media (max-width:560px){.hacts{width:100%;flex-wrap:wrap}}
+@media (max-width:360px){header.top{padding:14px 12px 16px}.hbtn{padding:8px 12px;font-size:.9rem}}
+/* info e contatti */
+.info{text-align:left}
+.info .av{width:64px;height:64px;border-radius:50%;background:var(--pri);color:#fff;display:grid;place-items:center;font-size:1.9rem;font-weight:800;margin:4px 0 8px}
+.info p{margin:0 0 12px;line-height:1.55}
+.cbtns{display:grid;gap:10px;margin:6px 0 4px}
+.btn.wa{background:#0b6e4f;color:#fff;text-decoration:none}
+a.btn{text-decoration:none}
+.cmail{color:var(--mute);font-size:.9rem;margin:4px 0 14px;word-break:break-all}
+/* animazioni leggere */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes sheetUp{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+#home:not(.hide),#editor:not(.hide){animation:fadeIn .28s ease-out}
+.gcard{animation:rise .4s ease-out both;animation-delay:var(--d,0ms)}
+.modal.on{animation:fadeIn .2s ease-out}
+.modal.on .sheet{animation:sheetUp .32s cubic-bezier(.2,.8,.2,1)}
+.player.on{animation:fadeIn .22s ease-out}
+.step{animation:rise .3s ease-out}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div class="logo" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13" fill="none" stroke="#ff8787" stroke-width="4"/><circle cx="20" cy="20" r="4.5" fill="#fff"/></svg></div>
+  <div class="ht"><h1>Spiegamelo</h1><p>Guide facili per qualsiasi app o schermata, con il cerchio rosso su dove toccare</p></div>
+  <div class="hacts">
+    <button class="hbtn" id="btnMusic" aria-pressed="false" title="Musica calma di sottofondo"><svg class="note-ic" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="M8 17.5V6l11-2.5v11.5" stroke="currentColor" stroke-width="2.2" fill="none"/><circle cx="5.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15" r="2.8" fill="currentColor"/></svg> Musica <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><b>spenta</b></button>
+    <button class="hbtn" id="btnInfo" aria-label="Info e contatti" title="Info e contatti">ℹ️ Info</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <h2>Basta spiegare la stessa cosa dieci volte al telefono 📞</h2>
+      <div style="color:var(--mute)">Crea una guida una volta sola, per <b>qualsiasi app o schermata</b>: SPID, app IO, pagoPA, app della banca, Fascicolo Sanitario, CUP, la TV, WhatsApp… Per mamma, papà, i nonni o per chi è appena arrivato in Italia: i modelli pronti sono in italiano, inglese, francese, arabo e cinese. Chi la riceve la apre quando serve: un passo per schermata, scritte grandi, una voce che legge, anche senza internet.</div>
+      <div class="pills" aria-hidden="true"><span>🔐 SPID</span><span>📱 App IO</span><span>🧾 pagoPA</span><span>🩺 Fascicolo Sanitario</span><span>🏦 Banca</span><span>📺 TV e HDMI</span><span>🛂 Permesso di soggiorno</span><span>💬 WhatsApp</span></div>
+      <ol>
+        <li>Scegli un <b>modello pronto</b> (oltre 20, divisi per categoria) oppure parti da zero</li>
+        <li>Fai gli screenshot sul <b>tuo</b> telefono mentre fai l'operazione</li>
+        <li>Scrivi cosa fare e <b>tocca la foto</b> per mettere il cerchio rosso</li>
+        <li>Premi <b>Invia</b> e mandala su WhatsApp, Telegram o per email, oppure <b>Stampa</b> la scheda da tenere vicino al telefono</li>
+      </ol>
+      <div class="row" style="margin-top:14px">
+        <button class="btn pri big" id="btnNew">＋ Nuova guida</button>
+        <button class="btn ghost" id="btnImport">📥 Apri una guida ricevuta</button>
+        <input type="file" id="importFile" accept=".html,.htm,text/html,application/json,.json" class="hide">
+      </div>
+    </div>
+    <h3 class="sec">Le tue guide</h3>
+    <div class="guides" id="guideList"></div>
+    <footer>I dati restano solo su questo dispositivo. Nessun account, nessun server.<br><button class="linkbtn" id="btnInfo2">ℹ️ Info e contatti · chi ha creato Spiegamelo</button></footer>
+  </section>
+
+  <!-- EDITOR -->
+  <section id="editor" class="hide">
+    <div class="ebar">
+      <button class="btn ghost sm" id="btnBack">← Le mie guide</button>
+      <div class="grow"></div>
+      <span class="saved" id="savedLbl"></span>
+      <button class="btn pri sm" id="btnPlay">▶ Prova</button>
+    </div>
+    <div class="card">
+      <div class="field"><label for="fTitle">Titolo della guida</label>
+        <input class="inp" id="fTitle" placeholder="Es. Come fare una videochiamata"></div>
+      <div class="grid2">
+        <div class="field"><label for="fFor">Per chi è <small>(facoltativo)</small></label>
+          <input class="inp" id="fFor" placeholder="Es. Nonna Rosa"></div>
+        <div class="field"><label for="fDevice">Dispositivo</label>
+          <select class="inp" id="fDevice"><option value="">Qualsiasi</option><option>Android</option><option>iPhone</option><option>Tablet</option><option>Smart TV</option><option>Computer</option></select></div>
+      </div>
+      <div class="field"><label for="fLang">Lingua di chi la riceve <small>(pulsanti e voce della guida)</small></label>
+        <select class="inp" id="fLang"><option value="it">IT · Italiano</option><option value="en">EN · English (inglese)</option><option value="fr">FR · Français (francese)</option><option value="ar">AR · العربية (arabo)</option><option value="zh">ZH · 中文 (cinese)</option></select></div>
+      <div class="grid2">
+        <div class="field"><label for="fHelper">Chi aiuta se non riesce <small>(facoltativo)</small></label>
+          <input class="inp" id="fHelper" placeholder="Es. Marco"></div>
+        <div class="field"><label for="fPhone">Numero da chiamare</label>
+          <input class="inp" id="fPhone" type="tel" inputmode="tel" placeholder="Es. 333 1234567"></div>
+      </div>
+    </div>
+    <div id="steps"></div>
+    <button class="btn acc big block" id="btnAddStep">＋ Aggiungi un passo</button>
+    <div class="row" style="margin-top:14px">
+      <button class="btn" id="btnShare2">📤 Invia (WhatsApp, email…)</button>
+      <button class="btn" id="btnPrint2">🖨️ Stampa scheda</button>
+      <button class="btn danger" id="btnDelete">🗑 Elimina guida</button>
+    </div>
+  </section>
+</main>
+
+<button class="btn pri big fab hide" id="fab">＋ Nuova guida</button>
+
+<div class="modal" id="tplModal" role="dialog" aria-modal="true" aria-labelledby="tplTitle"><div class="sheet">
+  <h2 id="tplTitle">Da dove partiamo?</h2>
+  <div style="color:var(--mute);margin-bottom:10px">Scegli un modello: i testi sono già scritti in modo semplice, tu aggiungi solo gli screenshot del tuo telefono.</div>
+  <div class="langrow"><span>Lingua della guida:</span>
+    <div class="seg" id="tplLangs" role="group" aria-label="Lingua della guida"></div></div>
+  <input class="inp" id="tplSearch" type="search" aria-label="Cerca un modello" placeholder="🔎 Cerca: SPID, ricetta, HDMI, permesso…" autocomplete="off">
+  <div class="chips" id="tplCats" role="group" aria-label="Categorie"></div>
+  <div id="tplList"></div>
+  <button class="btn ghost block" style="margin-top:8px" data-close>Annulla</button>
+</div></div>
+
+<div class="modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoTitle"><div class="sheet info">
+  <div class="av" aria-hidden="true" id="infoAv">A</div>
+  <h2 id="infoTitle">Ciao, sono <span id="infoName">Alessio</span> 👋</h2>
+  <p>Ho creato <b>Spiegamelo</b> per chi deve spiegare il telefono a mamma, papà, ai nonni o a chi è appena arrivato in Italia.</p>
+  <p>Invece di ripetere le stesse cose al telefono, prepari la guida una volta sola: le foto delle schermate, un cerchio rosso dove toccare e frasi semplici. Chi la riceve la apre quando vuole, anche senza internet, e può farsela leggere ad alta voce, in italiano, inglese, francese, arabo o cinese.</p>
+  <p>Non serve nessun account: le guide restano solo su questo dispositivo.</p>
+  <div id="infoContact" class="hide">
+    <p><b>Hai un'idea, un modello da suggerire o hai trovato un errore?</b> Scrivimi, ti rispondo volentieri.</p>
+    <div class="cbtns"><a class="btn big wa hide" id="ctWa" target="_blank" rel="noopener">💬 Scrivimi su WhatsApp</a><a class="btn big pri hide" id="ctMail">✉️ Mandami un'email</a></div>
+    <div class="cmail hide" id="ctMailTxt"></div>
+  </div>
+  <button class="btn ghost block" data-close>Chiudi</button>
+</div></div>
+
+<div class="player" id="player" role="dialog" aria-modal="true" aria-label="Anteprima della guida"><div class="pbar"><span id="playerLbl">Anteprima: così la vedrà</span><button class="close" id="playerClose">✕ Chiudi</button></div><iframe id="playerFrame" title="Anteprima guida"></iframe></div>
+<input type="file" id="imgFile" accept="image/*" class="hide">
+<div class="toast" id="toast"></div>
+<iframe id="printFrame" class="hide" title="stampa"></iframe>
+
+<script>
+"use strict";
+/* ================= CONTATTI (da modificare qui) =================
+   name: il tuo nome · email: indirizzo email
+   whatsapp: link diretto (es. https://wa.me/qr/...) oppure numero (es. +39 333 1234567)
+   Se un campo è vuoto (''), il relativo pulsante non viene mostrato. */
+const CONTACT = { name: 'Alessio', whatsapp: 'https://wa.me/qr/L4SHBNHXK6KGN1', email: 'aleg.auren@gmail.com' };
+
+/* Musica calma generata nel browser (Web Audio): nessun file esterno, nessun diritto d'autore. */
+function SpMusic() {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var ctx = null, bus = null, master = null, duckG = null, timer = null, want = false, held = false, n = 0, VOL = 0.06;
+  var CH = [[48, 55, 59, 64], [45, 52, 55, 60], [41, 48, 52, 57], [43, 50, 55, 59]];
+  var HI = [72, 74, 76, 79, 81];
+  function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function active() { return !(navigator.userActivation && !navigator.userActivation.hasBeenActive); }
+  function init() {
+    if (ctx) return true; if (!AC || !active()) return false;
+    try { ctx = new AC(); } catch (e) { return false; }
+    master = ctx.createGain(); master.gain.value = 0; duckG = ctx.createGain(); duckG.gain.value = 1;
+    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 0.3;
+    var dl = ctx.createDelay(2); dl.delayTime.value = 0.42; var fb = ctx.createGain(); fb.gain.value = 0.3; var wet = ctx.createGain(); wet.gain.value = 0.35;
+    lp.connect(master); lp.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(master);
+    master.connect(duckG); duckG.connect(ctx.destination); bus = lp; return true;
+  }
+  function voice(m, t, len, peak, type) {
+    var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = hz(m);
+    if (o.detune) o.detune.value = (Math.random() - 0.5) * 10;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + len * 0.35); g.gain.linearRampToValueAtTime(0.0001, t + len);
+    o.connect(g); g.connect(bus); o.start(t); o.stop(t + len + 0.05);
+  }
+  function chord() {
+    if (!ctx || ctx.state !== 'running') return;
+    var t = ctx.currentTime + 0.05, c = CH[n % CH.length]; n++;
+    for (var k = 0; k < c.length; k++) voice(c[k], t, 10, k ? 0.05 : 0.07, k ? 'sine' : 'triangle');
+    if (Math.random() < 0.7) voice(HI[Math.floor(Math.random() * HI.length)], t + 2 + Math.random() * 3, 4, 0.02, 'sine');
+  }
+  function ramp(g, v, s) { var t = ctx.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(v, t + s); }
+  function ok() { return want && !held && !document.hidden; }
+  function resume() {
+    if (!ok() || !init()) return;
+    var go = function () { if (!ok() || ctx.state !== 'running') return; ramp(master, VOL, 2.5); if (!timer) { chord(); timer = setInterval(chord, 7000); } };
+    var p = ctx.state === 'running' ? null : ctx.resume();
+    if (p && p.then) p.then(go, function () {}); else go();
+  }
+  function pause() {
+    clearInterval(timer); timer = null; if (!ctx) return; ramp(master, 0, 0.8);
+    setTimeout(function () { if (!ok() && ctx.state === 'running' && ctx.suspend) ctx.suspend(); }, 900);
+  }
+  function gesture() { if (ok() && (!ctx || ctx.state !== 'running')) resume(); }
+  ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { document.addEventListener(ev, gesture, true); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) pause(); else resume(); });
+  window.addEventListener('pagehide', pause);
+  return {
+    set: function (b) { want = !!b; if (want) resume(); else pause(); },
+    hold: function (b) { held = !!b; if (held) pause(); else resume(); },
+    duck: function (b) { if (ctx) ramp(duckG, b ? 0.1 : 1, b ? 0.3 : 1.2); },
+    get on() { return want; },
+    dbg: function () { return { state: ctx ? ctx.state : 'none', master: master ? master.gain.value : 0, duck: duckG ? duckG.gain.value : 1, playing: !!timer, want: want, held: held }; }
+  };
+}
+
+/* ---------------- Storage (IndexedDB con fallback localStorage) ---------------- */
+const DB = (() => {
+  let dbp = null;
+  const LS = 'spiegamelo_guides';
+  function open() {
+    if (dbp) return dbp;
+    dbp = new Promise((res) => {
+      if (!('indexedDB' in window)) return res(null);
+      try {
+        const rq = indexedDB.open('spiegamelo', 1);
+        rq.onupgradeneeded = () => rq.result.createObjectStore('guides', { keyPath: 'id' });
+        rq.onsuccess = () => res(rq.result);
+        rq.onerror = () => res(null);
+      } catch (e) { res(null); }
+    });
+    return dbp;
+  }
+  function lsAll() { try { return JSON.parse(localStorage.getItem(LS) || '[]'); } catch (e) { return []; } }
+  async function tx(mode, fn) {
+    const db = await open();
+    if (!db) return null;
+    return new Promise((res, rej) => {
+      const t = db.transaction('guides', mode); const st = t.objectStore('guides');
+      const r = fn(st); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error);
+    });
+  }
+  return {
+    async all() { const db = await open(); if (!db) return lsAll(); return (await tx('readonly', s => s.getAll())) || []; },
+    async put(g) { const db = await open(); if (!db) { const a = lsAll().filter(x => x.id !== g.id); a.push(g); localStorage.setItem(LS, JSON.stringify(a)); return; } await tx('readwrite', s => s.put(g)); },
+    async del(id) { const db = await open(); if (!db) { localStorage.setItem(LS, JSON.stringify(lsAll().filter(x => x.id !== id))); return; } await tx('readwrite', s => s.delete(id)); }
+  };
+})();
+
+/* ---------------- Utility ---------------- */
+const $ = s => document.querySelector(s);
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2600); }
+function slug(s) { return (s || 'guida').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50) || 'guida'; }
+function newStep(text = '', note = '') { return { id: uid(), text, note, img: null, marker: null }; }
+
+/* ---------------- Schermate dimostrative (SVG generate) ---------------- */
+function svgUrl(svg) { return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+function phone(inner, bg = '#fff') {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="360" height="640"><rect width="360" height="640" fill="${bg}"/><rect width="360" height="26" fill="#000" opacity=".85"/><text x="16" y="18" font-family="Arial" font-size="13" fill="#fff">10:24</text><text x="300" y="18" font-family="Arial" font-size="13" fill="#fff">▮▮▮ 87%</text>${inner}</svg>`;
+}
+function demoScreens() {
+  const icons = [['Telefono', '#2f9e44', '☎'], ['Messaggi', '#1c7ed6', '✉'], ['Foto', '#f08c00', '❀'], ['Fotocamera', '#495057', '◉'], ['Meteo', '#15aabf', '☀'], ['WhatsApp', '#25d366', '✆'], ['Orologio', '#343a40', '◷'], ['Impostazioni', '#868e96', '⚙']];
+  let home = '';
+  icons.forEach((ic, i) => { const x = 30 + (i % 4) * 80, y = 120 + Math.floor(i / 4) * 110; home += `<rect x="${x}" y="${y}" width="60" height="60" rx="16" fill="${ic[1]}"/><text x="${x + 30}" y="${y + 41}" font-size="28" text-anchor="middle" fill="#fff" font-family="Arial">${ic[2]}</text><text x="${x + 30}" y="${y + 80}" font-size="12" text-anchor="middle" fill="#fff" font-family="Arial">${ic[0]}</text>`; });
+  const s1 = phone(`<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4c6ef5"/><stop offset="1" stop-color="#ae3ec9"/></linearGradient></defs><rect y="26" width="360" height="614" fill="url(#g)"/>${home}`);
+  const names = [['Marco', 'Ok ci sentiamo dopo 👍'], ['Giulia', 'Foto'], ['Dottor Bianchi', 'Ricetta pronta'], ['Condominio', 'Riunione giovedì'], ['Anna', 'Grazie!']];
+  let list = '';
+  names.forEach((n, i) => { const y = 110 + i * 78; list += `<circle cx="44" cy="${y + 30}" r="24" fill="${['#ffa94d', '#74c0fc', '#8ce99a', '#e599f7', '#ffd43b'][i]}"/><text x="44" y="${y + 37}" font-size="20" text-anchor="middle" font-family="Arial" fill="#fff">${n[0][0]}</text><text x="82" y="${y + 24}" font-size="17" font-family="Arial" font-weight="bold" fill="#222">${n[0]}</text><text x="82" y="${y + 46}" font-size="14" font-family="Arial" fill="#777">${n[1]}</text><line x1="82" x2="360" y1="${y + 70}" y2="${y + 70}" stroke="#eee"/>`; });
+  const s2 = phone(`<rect y="26" width="360" height="64" fill="#075e54"/><text x="16" y="66" font-size="21" font-family="Arial" font-weight="bold" fill="#fff">Chat</text>${list}`);
+  const s3 = phone(`<rect y="26" width="360" height="64" fill="#075e54"/><text x="16" y="66" font-size="22" fill="#fff" font-family="Arial">‹</text><circle cx="56" cy="58" r="18" fill="#ffa94d"/><text x="84" y="65" font-size="18" font-family="Arial" font-weight="bold" fill="#fff">Marco</text><rect x="256" y="48" width="26" height="20" rx="4" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M282 54 l10 -6 v20 l-10 -6z" fill="#fff"/><path d="M318 46 q-4 12 6 22 l6 -5 q2 -2 4 0 l5 5 q2 2 0 4 l-4 4 q-16 -2 -26 -22 l4 -4 q2 -2 4 0z" fill="#fff" transform="translate(4,-2) scale(.95)"/><rect y="90" width="360" height="550" fill="#ece5dd"/><rect x="20" y="130" width="210" height="44" rx="10" fill="#fff"/><text x="34" y="158" font-size="15" font-family="Arial" fill="#222">Ciao mamma, tutto bene?</text><rect x="130" y="196" width="210" height="44" rx="10" fill="#dcf8c6"/><text x="144" y="224" font-size="15" font-family="Arial" fill="#222">Sì! Ti chiamo in video</text>`);
+  const s4 = phone(`<rect y="26" width="360" height="614" fill="#1b3a35"/><circle cx="180" cy="230" r="70" fill="#ffa94d"/><text x="180" y="252" font-size="60" text-anchor="middle" font-family="Arial" fill="#fff">M</text><text x="180" y="350" font-size="26" text-anchor="middle" font-family="Arial" font-weight="bold" fill="#fff">Marco</text><text x="180" y="384" font-size="17" text-anchor="middle" font-family="Arial" fill="#cfe">Squilla…</text><circle cx="180" cy="560" r="34" fill="#e03131"/><text x="180" y="572" font-size="30" text-anchor="middle" font-family="Arial" fill="#fff">✆</text>`);
+  const s5 = phone(`<rect y="26" width="360" height="614" fill="#868e96"/><rect y="26" width="360" height="614" fill="#495057" opacity=".4"/><circle cx="180" cy="240" r="90" fill="#adb5bd"/><rect x="100" y="320" width="160" height="200" rx="80" fill="#adb5bd"/><rect x="250" y="60" width="90" height="140" rx="12" fill="#343a40" stroke="#fff" stroke-width="2"/><text x="295" y="140" font-size="12" text-anchor="middle" font-family="Arial" fill="#fff">Tu</text><rect x="30" y="530" width="300" height="76" rx="38" fill="#000" opacity=".55"/><circle cx="90" cy="568" r="24" fill="#495057"/><circle cx="180" cy="568" r="24" fill="#495057"/><circle cx="270" cy="568" r="28" fill="#e03131"/><text x="270" y="578" font-size="26" text-anchor="middle" font-family="Arial" fill="#fff">✆</text>`);
+  return [s1, s2, s3, s4, s5].map(svgUrl);
+}
+function demoGuide() {
+  const sc = demoScreens();
+  const g = { id: uid(), title: 'Come fare una videochiamata su WhatsApp', forWhom: 'Nonna Rosa', device: 'Android', helper: 'Marco', phone: '3331234567', created: Date.now(), updated: Date.now(), demo: true, steps: [] };
+  const st = [
+    ['Tocca l\'icona verde di WhatsApp.', 'È quella con il telefono bianco dentro il fumetto.', { x: 38.9, y: 40.6 }],
+    ['Tocca il nome della persona che vuoi vedere. Per esempio: Marco.', '', { x: 30, y: 21.9 }],
+    ['In alto a destra tocca la videocamera.', 'NON toccare la cornetta: quella fa solo la chiamata normale.', { x: 75, y: 9.1 }],
+    ['Aspetta che Marco risponda. Tieni il telefono davanti al viso.', 'Se non risponde, riprova più tardi.', null],
+    ['Per finire tocca il pulsante rosso in basso.', '', { x: 75, y: 88.8 }]
+  ];
+  st.forEach((s, i) => { const x = newStep(s[0], s[1]); x.img = sc[i]; x.marker = s[2]; g.steps.push(x); });
+  return g;
+}
+
+/* ---------------- Modelli pronti (IT / EN) ----------------
+   Testi verificati su fonti ufficiali (ottobre 2026), volutamente generici:
+   le schermate cambiano secondo Regione, banca, gestore SPID e marca della TV. */
+const CATS = [
+  { id: 'pa', e: '🏛️', it: 'Pubblica amministrazione', en: 'Public services', fr: 'Services publics', ar: 'الخدمات العامة', zh: '政府服务' },
+  { id: 'sal', e: '🩺', it: 'Salute', en: 'Health', fr: 'Santé', ar: 'الصحة', zh: '医疗健康' },
+  { id: 'soldi', e: '💶', it: 'Soldi e pagamenti', en: 'Money & payments', fr: 'Argent et paiements', ar: 'المال والمدفوعات', zh: '钱和付款' },
+  { id: 'str', e: '🌍', it: 'Per stranieri', en: 'For foreigners', fr: 'Pour les étrangers', ar: 'للأجانب', zh: '外国人专区' },
+  { id: 'casa', e: '📺', it: 'Casa e TV', en: 'Home & TV', fr: 'Maison et télé', ar: 'المنزل والتلفاز', zh: '家居和电视' },
+  { id: 'com', e: '💬', it: 'Comunicare e telefono', en: 'Communicate & phone', fr: 'Communiquer et téléphone', ar: 'التواصل والهاتف', zh: '沟通和手机' },
+  { id: 'sic', e: '🛡️', it: 'Sicurezza', en: 'Safety', fr: 'Sécurité', ar: 'الأمان', zh: '安全' }
+];
+const TEMPLATES = [
+  { id: 'vuota', cat: '', e: '📝', k: 'vuota blank zero',
+    it: { t: 'Guida vuota', d: 'Parti da zero, per qualsiasi app o schermata', title: '', s: [['', '']] },
+    en: { t: 'Blank guide', d: 'Start from scratch, for any app or screen', title: '', s: [['', '']] } },
+
+  /* ---- Comunicare e telefono ---- */
+  { id: 'wa-video', cat: 'com', e: '📹', k: 'whatsapp videochiamata video call',
+    it: { t: 'Videochiamata su WhatsApp', d: 'Chiamare in video figli e nipoti', title: 'Come fare una videochiamata su WhatsApp', s: [['Tocca l\'icona verde di WhatsApp.', ''], ['Tocca il nome della persona che vuoi chiamare.', ''], ['In alto a destra tocca la videocamera.', 'Non toccare la cornetta: quella è la chiamata normale.'], ['Aspetta che risponda. Tieni il telefono davanti al viso.', ''], ['Per finire tocca il pulsante rosso.', '']] },
+    en: { t: 'WhatsApp video call', d: 'Video-call your family', title: 'How to make a WhatsApp video call', s: [['Tap the green WhatsApp icon.', ''], ['Tap the name of the person you want to call.', ''], ['At the top right, tap the video camera.', 'Don\'t tap the phone handset: that is a normal voice call.'], ['Wait for them to answer. Hold the phone in front of your face.', ''], ['To finish, tap the red button.', '']] } },
+  { id: 'wa-foto', cat: 'com', e: '🖼️', k: 'whatsapp foto photo send',
+    it: { t: 'Mandare una foto su WhatsApp', d: 'Scegliere una foto e inviarla', title: 'Come mandare una foto su WhatsApp', s: [['Apri WhatsApp e tocca il nome della persona.', ''], ['In basso tocca la graffetta (o il +).', ''], ['Tocca «Galleria» (o «Foto»).', ''], ['Tocca la foto che vuoi mandare.', ''], ['Tocca la freccia verde per inviare.', 'Se la freccia non c\'è, aspetta un secondo.']] },
+    en: { t: 'Send a photo on WhatsApp', d: 'Pick a photo and send it', title: 'How to send a photo on WhatsApp', s: [['Open WhatsApp and tap the person\'s name.', ''], ['At the bottom, tap the paperclip (or the +).', ''], ['Tap “Gallery” (or “Photos”).', ''], ['Tap the photo you want to send.', ''], ['Tap the green arrow to send.', 'If you can\'t see the arrow, wait a second.']] } },
+  { id: 'foto', cat: 'com', e: '📷', k: 'fotocamera camera galleria',
+    it: { t: 'Fare una foto e ritrovarla', d: 'Fotocamera e Galleria', title: 'Come fare una foto e ritrovarla', s: [['Tocca l\'icona della Fotocamera.', ''], ['Inquadra e tocca il grande pulsante bianco in basso.', ''], ['Per rivederla tocca il quadratino in basso a sinistra.', 'Oppure apri l\'app Galleria / Foto.']] },
+    en: { t: 'Take a photo and find it', d: 'Camera and Gallery', title: 'How to take a photo and find it again', s: [['Tap the Camera icon.', ''], ['Frame the picture and tap the big white button at the bottom.', ''], ['To see it again, tap the small square at the bottom left.', 'Or open the Gallery / Photos app.']] } },
+  { id: 'volume', cat: 'com', e: '🔊', k: 'volume suoneria ringtone',
+    it: { t: 'Alzare il volume e la suoneria', d: 'Per sentire quando chiamano', title: 'Come alzare il volume della suoneria', s: [['Premi il tasto del volume sul lato del telefono: quello più in alto alza il volume.', ''], ['Se compare una barra, tocca i tre puntini o la rotellina.', ''], ['Trascina verso l\'alto la barra «Suoneria».', '']] },
+    en: { t: 'Turn up volume and ringtone', d: 'So you hear when someone calls', title: 'How to turn up the ringtone volume', s: [['Press the volume button on the side of the phone: the upper one turns the volume up.', ''], ['If a bar appears, tap the three dots or the gear icon.', ''], ['Drag the “Ringtone” bar upwards.', '']] } },
+
+  /* ---- Pubblica amministrazione ---- */
+  { id: 'spid', cat: 'pa', e: '🔐', k: 'spid posteid login identita digitale accesso',
+    it: { t: 'Entrare in un sito con SPID', d: 'Con l\'app del tuo gestore (per esempio PosteID)', title: 'Come entrare in un sito con SPID', s: [
+      ['Sul sito o nell\'app del servizio (per esempio INPS, Agenzia delle Entrate, Comune) tocca il pulsante «Entra con SPID».', ''],
+      ['Scegli dall\'elenco il tuo gestore SPID, cioè chi ti ha dato lo SPID (per esempio Poste Italiane).', 'Ogni gestore ha schermate un po\' diverse: queste istruzioni sono generali.'],
+      ['Scrivi il tuo nome utente e la password, poi conferma.', ''],
+      ['Il gestore chiede una conferma in più: di solito una notifica nella sua app, un codice temporaneo o un SMS.', 'Con PosteID puoi scegliere la notifica sull\'app PosteID oppure generare un PIN temporaneo nell\'app.'],
+      ['Apri l\'app del gestore e autorizza l\'accesso con il tuo codice, l\'impronta o il viso.', 'Autorizza SOLO se sei tu ad aver appena chiesto di entrare. Se arriva una richiesta che non hai fatto, rifiutala.'],
+      ['Torna sul sito: ora sei dentro. Quando hai finito, esci dal sito.', ''],
+      ['Ricorda: password, PIN e codici SPID sono solo tuoi.', 'Nessun operatore serio te li chiede al telefono, per SMS o email. Se qualcuno li chiede, è una truffa.']] },
+    en: { t: 'Log in to a website with SPID', d: 'With your provider\'s app (for example PosteID)', title: 'How to log in to a website with SPID', s: [
+      ['On the website or app of the service (for example INPS, Agenzia delle Entrate, your Comune), tap the “Entra con SPID” button (Log in with SPID).', ''],
+      ['Choose your SPID provider from the list – the company that gave you SPID (for example Poste Italiane).', 'Each provider\'s screens look a bit different: these steps are general.'],
+      ['Type your username and password, then confirm.', ''],
+      ['The provider asks for one more confirmation: usually a notification in its app, a temporary code or an SMS.', 'With PosteID you can choose a notification in the PosteID app or generate a temporary PIN in the app.'],
+      ['Open the provider\'s app and approve the login with your code, fingerprint or face.', 'Approve ONLY if you just asked to log in. If a request arrives that you didn\'t make, reject it.'],
+      ['Go back to the website: you are in. When you have finished, log out.', ''],
+      ['Remember: your SPID password, PIN and codes are yours only.', 'No genuine operator will ask for them by phone, SMS or email. If someone does, it is a scam.']] } },
+  { id: 'cie', cat: 'pa', e: '🪪', k: 'cie cieid carta identita elettronica nfc pin',
+    it: { t: 'Entrare con la Carta d\'Identità Elettronica', d: 'CIE con l\'app CieID', title: 'Come entrare con la Carta d\'Identità Elettronica (CIE)', s: [
+      ['La prima volta: scarica l\'app ufficiale CieID e registra la tua carta. Ti serve il PIN di 8 cifre.', 'Le prime 4 cifre del PIN te le hanno date quando hai chiesto la carta, le altre 4 sono arrivate insieme alla carta.'],
+      ['Quando l\'app lo chiede, appoggia la carta sul retro del telefono e tienila ferma qualche secondo.', 'Serve un telefono con NFC. Se non legge la carta, controlla che l\'NFC sia attivo nelle impostazioni.'],
+      ['Sul sito del servizio tocca «Entra con CIE».', 'Sui telefoni Android usa il browser Chrome.'],
+      ['Si apre l\'app CieID: inserisci le ultime 4 cifre del PIN (o usa l\'impronta) e appoggia di nuovo la carta.', 'Se entri dal computer, segui quello che propone la pagina (per esempio inquadrare un codice QR con l\'app CieID).'],
+      ['Fatto: sei dentro al servizio.', 'Il PIN della carta non va mai detto a nessuno, neanche al telefono.']] },
+    en: { t: 'Log in with the Electronic ID Card', d: 'CIE with the CieID app', title: 'How to log in with the Electronic Identity Card (CIE)', s: [
+      ['First time only: download the official CieID app and register your card. You need the 8-digit PIN.', 'You got the first 4 digits of the PIN when you applied for the card, the other 4 came with the card.'],
+      ['When the app asks, place the card on the back of the phone and hold it still for a few seconds.', 'You need a phone with NFC. If it doesn\'t read the card, check that NFC is turned on in the settings.'],
+      ['On the service\'s website, tap “Entra con CIE” (Log in with CIE).', 'On Android phones use the Chrome browser.'],
+      ['The CieID app opens: enter the last 4 digits of the PIN (or use your fingerprint) and place the card on the phone again.', 'If you log in from a computer, follow what the page suggests (for example scanning a QR code with the CieID app).'],
+      ['Done: you are logged in.', 'Never tell anyone your card PIN, not even on the phone.']] } },
+  { id: 'io', cat: 'pa', e: '📱', k: 'app io messaggi documenti portafoglio tessera sanitaria patente wallet',
+    it: { t: 'App IO: messaggi e documenti', d: 'Leggere gli avvisi degli enti, avere tessera sanitaria e patente nel telefono', title: 'Come usare l\'app IO: messaggi e documenti', s: [
+      ['Apri l\'app IO ed entra con SPID o CIE (dopo la prima volta basta il codice di sblocco che hai scelto).', ''],
+      ['Nei messaggi trovi le comunicazioni di Comune, INPS, Agenzia delle Entrate e altri enti. Tocca un messaggio per leggerlo.', 'Se il messaggio contiene un avviso da pagare, in fondo trovi il pulsante «Paga».'],
+      ['Per avere i documenti nel telefono, apri il Portafoglio e scegli di aggiungere un documento.', 'Si possono aggiungere Tessera Sanitaria, Patente (formato tessera) e Carta Europea della Disabilità. La carta d\'identità no.'],
+      ['Scegli il documento e conferma la tua identità quando l\'app lo chiede.', 'Per la patente può servire qualche minuto: arriva una notifica quando è pronta.'],
+      ['Attenzione agli SMS o alle email «da IO» che contengono un link.', 'Apri sempre direttamente l\'app IO, scaricata dagli store ufficiali.']] },
+    en: { t: 'IO app: messages and documents', d: 'Read notices from public offices, keep health card and driving licence on your phone', title: 'How to use the IO app: messages and documents', s: [
+      ['Open the IO app and log in with SPID or CIE (after the first time, the unlock code you chose is enough).', ''],
+      ['In the messages you find notices from your Comune, INPS, Agenzia delle Entrate and other offices. Tap a message to read it.', 'If the message contains a payment notice, you find the “Paga” (Pay) button at the bottom.'],
+      ['To keep documents on your phone, open the Portafoglio (Wallet) and choose to add a document.', 'You can add the Health Card (Tessera Sanitaria), the card-format Driving Licence and the European Disability Card. Not the identity card.'],
+      ['Choose the document and confirm your identity when the app asks.', 'The driving licence can take a few minutes: you get a notification when it is ready.'],
+      ['Be wary of SMS or emails “from IO” that contain links.', 'Always open the IO app directly, downloaded from the official app stores.']] } },
+  { id: 'inps', cat: 'pa', e: '👵', k: 'inps cedolino pensione pension',
+    it: { t: 'Cedolino della pensione INPS', d: 'Vedere l\'importo e le trattenute', title: 'Come vedere il cedolino della pensione INPS', s: [
+      ['Vai sul sito inps.it oppure apri l\'app ufficiale INPS Mobile.', ''],
+      ['Cerca il servizio «Cedolino pensione».', 'Sul sito puoi scriverlo nella casella di ricerca.'],
+      ['Entra con SPID, CIE o CNS.', ''],
+      ['Scegli il mese e apri il cedolino: vedi l\'importo e le eventuali trattenute.', 'Dallo stesso servizio puoi anche confrontare due cedolini e scaricare la Certificazione Unica.'],
+      ['Se vuoi stamparlo o salvarlo, cerca l\'opzione per scaricarlo in PDF.', 'Attenzione agli SMS o alle email «dall\'INPS» con un link: entra sempre dal sito o dall\'app ufficiale.']] },
+    en: { t: 'INPS pension slip', d: 'See the amount and deductions', title: 'How to see your INPS pension slip (cedolino)', s: [
+      ['Go to the inps.it website or open the official INPS Mobile app.', ''],
+      ['Look for the “Cedolino pensione” (pension slip) service.', 'On the website you can type it in the search box.'],
+      ['Log in with SPID, CIE or CNS.', ''],
+      ['Choose the month and open the slip: you see the amount and any deductions.', 'The same service also lets you compare two slips and download the Certificazione Unica (tax certificate).'],
+      ['To print or save it, look for the option to download it as a PDF.', 'Be wary of SMS or emails “from INPS” with links: always use the official website or app.']] } },
+
+  /* ---- Salute ---- */
+  { id: 'fse', cat: 'sal', e: '📄', k: 'fascicolo sanitario fse referto esami health record report',
+    it: { t: 'Scaricare un referto dal Fascicolo Sanitario', d: 'Referti, lettere di dimissione, ricette', title: 'Come scaricare un referto dal Fascicolo Sanitario Elettronico', s: [
+      ['Vai su fascicolosanitario.gov.it e scegli «Accedi al Fascicolo».', 'Molte Regioni hanno anche una loro app per il Fascicolo.'],
+      ['Sulla cartina tocca la tua Regione, quella dove hai l\'assistenza sanitaria.', 'Ogni Regione ha schermate diverse: i nomi dei menu possono cambiare.'],
+      ['Entra con SPID, CIE oppure Tessera Sanitaria (CNS).', ''],
+      ['Apri la sezione dei documenti e referti e cerca l\'esame per data o per tipo.', ''],
+      ['Tocca il referto per aprirlo e scegli di scaricarlo o stamparlo.', 'Per alcuni esami (per esempio radiografie) il CD o le immagini potrebbero andare ritirati nella struttura. Se c\'è un ticket da pagare, il referto può comparire solo dopo il pagamento.']] },
+    en: { t: 'Download a medical report (Fascicolo Sanitario)', d: 'Test results, discharge letters, prescriptions', title: 'How to download a medical report from the Electronic Health Record (FSE)', s: [
+      ['Go to fascicolosanitario.gov.it and choose “Accedi al Fascicolo” (Access your record).', 'Many Regions also have their own app for the health record.'],
+      ['On the map, tap your Region – the one where you receive healthcare.', 'Each Region has different screens: menu names may change.'],
+      ['Log in with SPID, CIE or your Health Card (CNS).', ''],
+      ['Open the documents and reports section and look for the test by date or type.', ''],
+      ['Tap the report to open it and choose to download or print it.', 'For some tests (for example X-rays) the CD or images may have to be collected in person. If a ticket (fee) is due, the report may appear only after payment.']] } },
+  { id: 'ricetta', cat: 'sal', e: '💊', k: 'ricetta elettronica farmacia nre farmaci prescription pharmacy',
+    it: { t: 'Ritirare i farmaci con la ricetta elettronica', d: 'Codice NRE e Tessera Sanitaria', title: 'Come ritirare i farmaci con la ricetta elettronica', s: [
+      ['Il medico prepara la ricetta elettronica: ti può dare il promemoria su carta oppure il codice della ricetta (NRE) per SMS, email o nel Fascicolo Sanitario.', 'Come la ricevi dipende dalla Regione e dal medico: chiedi a lui.'],
+      ['Vai in farmacia con la Tessera Sanitaria.', ''],
+      ['Mostra al farmacista il codice NRE (sul telefono o sul promemoria).', 'Il farmacista trova la ricetta con il codice NRE e il tuo codice fiscale.'],
+      ['Ritira i farmaci, paga l\'eventuale ticket e conserva lo scontrino.', 'Lo scontrino con il codice fiscale serve per le detrazioni nella dichiarazione dei redditi.']] },
+    en: { t: 'Collect medicines with an e-prescription', d: 'NRE code and Health Card', title: 'How to collect medicines with an electronic prescription', s: [
+      ['Your doctor issues the e-prescription: you may get a paper reminder, or the prescription code (NRE) by SMS, email or in your health record (Fascicolo Sanitario).', 'How you receive it depends on the Region and the doctor: ask your doctor.'],
+      ['Go to the pharmacy with your Health Card (Tessera Sanitaria).', ''],
+      ['Show the pharmacist the NRE code (on your phone or on the paper reminder).', 'The pharmacist finds the prescription with the NRE code and your tax code.'],
+      ['Collect the medicines, pay any ticket (fee) and keep the receipt.', 'The receipt with your tax code is useful for tax deductions.']] } },
+  { id: 'cup', cat: 'sal', e: '📅', k: 'cup prenotare visita esame booking appointment',
+    it: { t: 'Prenotare una visita al CUP online', d: 'Con la ricetta del medico', title: 'Come prenotare una visita o un esame al CUP online', s: [
+      ['Tieni a portata di mano il codice fiscale e la ricetta del medico con il codice NRE.', ''],
+      ['Apri il sito o l\'app CUP della tua Regione o ASL.', 'Ogni Regione ha il suo sistema: cerca «CUP online» con il nome della tua Regione e usa solo il sito ufficiale.'],
+      ['Inserisci codice fiscale e numero della ricetta (NRE). Alcune Regioni chiedono di entrare con SPID o CIE.', ''],
+      ['Scegli tra le date e i luoghi proposti e conferma la prenotazione.', 'La lettera di priorità sulla ricetta (U, B, D, P) decide i tempi. Alcune priorità, come le urgenti, non si prenotano online: in quel caso chiama o vai allo sportello CUP.'],
+      ['Salva la conferma o fai uno screenshot. Se non puoi andare, disdici in tempo.', 'In molte Regioni chi non disdice deve pagare lo stesso il ticket.']] },
+    en: { t: 'Book a medical visit online (CUP)', d: 'With your doctor\'s prescription', title: 'How to book a medical visit or test online (CUP)', s: [
+      ['Have your tax code and your doctor\'s prescription with the NRE code ready.', ''],
+      ['Open the CUP website or app of your Region or local health authority (ASL).', 'Each Region has its own system: search “CUP online” plus your Region\'s name and use only the official site.'],
+      ['Enter your tax code and the prescription number (NRE). Some Regions ask you to log in with SPID or CIE.', ''],
+      ['Choose among the dates and places offered and confirm the booking.', 'The priority letter on the prescription (U, B, D, P) sets the waiting time. Some priorities, such as urgent ones, cannot be booked online: call or go to a CUP desk.'],
+      ['Save the confirmation or take a screenshot. If you cannot go, cancel in time.', 'In many Regions, if you don\'t cancel you still have to pay the ticket (fee).']] } },
+
+  /* ---- Soldi e pagamenti ---- */
+  { id: 'pagopa', cat: 'soldi', e: '🧾', k: 'pagopa avviso pagamento qr codice avviso io tari multa bollettino payment',
+    it: { t: 'Pagare un avviso pagoPA', d: 'Con l\'app IO: codice QR o codice avviso', title: 'Come pagare un avviso pagoPA con l\'app IO', s: [
+      ['Prendi l\'avviso di pagamento pagoPA (su carta o PDF): ci sono il codice QR, il Codice Avviso e il codice fiscale dell\'ente.', 'Puoi pagare anche con l\'app della banca, alle Poste, in tabaccheria e negli altri punti con il logo pagoPA.'],
+      ['Apri l\'app IO ed entra.', ''],
+      ['Tocca «Inquadra» nel menu in basso e inquadra il codice QR dell\'avviso.', 'In alternativa puoi caricare l\'avviso o scrivere a mano il Codice Avviso e il codice fiscale dell\'ente.'],
+      ['Controlla bene l\'ente, il motivo e l\'importo.', 'Se l\'avviso ti è arrivato come messaggio in IO, basta aprirlo e toccare «Paga» in fondo.'],
+      ['Scegli il metodo di pagamento e, se richiesto, chi gestirà il pagamento. Poi tocca «Paga».', 'La commissione può cambiare secondo chi gestisce il pagamento.'],
+      ['Autorizza il pagamento (per esempio nell\'app della banca). La ricevuta arriva in IO.', 'Attenzione agli SMS o alle email con un link per «pagare una multa»: paga solo avvisi veri, da IO o dalla tua banca.']] },
+    en: { t: 'Pay a pagoPA notice', d: 'With the IO app: QR code or notice code', title: 'How to pay a pagoPA notice with the IO app', s: [
+      ['Take the pagoPA payment notice (paper or PDF): it has a QR code, the notice code (Codice Avviso) and the office\'s tax code.', 'You can also pay with your bank app, at the post office, at a tobacconist and other places showing the pagoPA logo.'],
+      ['Open the IO app and log in.', ''],
+      ['Tap “Inquadra” (Scan) in the bottom menu and point the camera at the QR code.', 'Alternatively you can upload the notice or type the notice code and the office\'s tax code.'],
+      ['Check the office, the reason and the amount carefully.', 'If the notice arrived as a message in IO, just open it and tap “Paga” (Pay) at the bottom.'],
+      ['Choose the payment method and, if asked, who will handle the payment. Then tap “Paga”.', 'The fee may change depending on who handles the payment.'],
+      ['Authorise the payment (for example in your bank app). The receipt arrives in IO.', 'Be wary of SMS or emails with links to “pay a fine”: only pay real notices, via IO or your bank.']] } },
+  { id: 'bonifico', cat: 'soldi', e: '🏦', k: 'bonifico banca iban bank transfer',
+    it: { t: 'Fare un bonifico dall\'app della banca', d: 'In sicurezza, controllando IBAN e nome', title: 'Come fare un bonifico dall\'app della banca', s: [
+      ['Apri l\'app della tua banca ed entra con il tuo codice, l\'impronta o il viso.', 'Ogni banca ha schermate diverse: i nomi dei menu possono cambiare.'],
+      ['Cerca la sezione dei pagamenti e scegli il bonifico.', ''],
+      ['Scrivi il nome del destinatario e l\'IBAN (in Italia inizia con IT e ha 27 caratteri), poi l\'importo e la causale.', 'La banca controlla se nome e IBAN corrispondono e ti avvisa se non coincidono: in quel caso FERMATI e verifica.'],
+      ['Controlla tutto e conferma con il codice o la notifica della banca.', 'Il bonifico istantaneo arriva in pochi secondi e non si può annullare.'],
+      ['Se qualcuno ti mette fretta o paura per farti fare un bonifico (un «parente» in difficoltà, un finto operatore), non farlo.', 'Richiama tu la persona o la banca usando un numero che conosci già. La banca non ti chiede mai password o codici.']] },
+    en: { t: 'Make a bank transfer from your bank app', d: 'Safely, checking IBAN and name', title: 'How to make a bank transfer (bonifico) from your bank app', s: [
+      ['Open your bank app and log in with your code, fingerprint or face.', 'Every bank has different screens: menu names may change.'],
+      ['Find the payments section and choose a bank transfer (bonifico).', ''],
+      ['Enter the recipient\'s name and IBAN (Italian IBANs start with IT and have 27 characters), then the amount and the reason.', 'The bank checks whether name and IBAN match and warns you if they don\'t: in that case STOP and check.'],
+      ['Check everything and confirm with the bank\'s code or notification.', 'An instant transfer arrives in seconds and cannot be cancelled.'],
+      ['If someone rushes or scares you into making a transfer (a “relative” in trouble, a fake operator), don\'t do it.', 'Call the person or the bank back yourself, using a number you already know. Your bank never asks for passwords or codes.']] } },
+
+  /* ---- Casa e TV ---- */
+  { id: 'tv-on', cat: 'casa', e: '📺', k: 'tv televisore canale accendere telecomando',
+    it: { t: 'Accendere la TV e trovare il canale', d: 'Telecomando e decoder', title: 'Come accendere la TV e trovare il canale', s: [['Premi il tasto rosso in alto sul telecomando.', ''], ['Scrivi il numero del canale con i tasti numerati.', 'Per esempio: 1 per Rai 1, 5 per Canale 5.'], ['Se lo schermo dice «Nessun segnale», premi il tasto SOURCE e scegli «TV».', '']] },
+    en: { t: 'Turn on the TV and find a channel', d: 'Remote and decoder', title: 'How to turn on the TV and find a channel', s: [['Press the red button at the top of the remote.', ''], ['Type the channel number with the number keys.', 'For example: 1 for Rai 1, 5 for Canale 5.'], ['If the screen says “No signal”, press the SOURCE button and choose “TV”.', '']] } },
+  { id: 'hdmi', cat: 'casa', e: '🔌', k: 'tv hdmi sorgente source input decoder fire stick console',
+    it: { t: 'Cambiare sorgente sulla TV (HDMI)', d: 'Per vedere decoder, chiavetta TV, console…', title: 'Come cambiare sorgente sulla TV (HDMI)', s: [
+      ['Prendi il telecomando della TV (non quello del decoder).', ''],
+      ['Premi il tasto della sorgente: spesso si chiama SOURCE o INPUT, oppure ha l\'icona di un rettangolo con una freccia.', 'Il nome e la posizione del tasto cambiano secondo la marca della TV.'],
+      ['Nell\'elenco scegli l\'ingresso HDMI dove è collegato l\'apparecchio (HDMI 1, HDMI 2…) e conferma con OK.', 'Il numero HDMI è scritto vicino alla presa, dietro o di lato alla TV.'],
+      ['Per tornare ai canali normali, ripeti e scegli «TV».', '']] },
+    en: { t: 'Change the TV input (HDMI)', d: 'To watch the decoder, TV stick, console…', title: 'How to change the TV input (HDMI)', s: [
+      ['Take the TV remote (not the decoder remote).', ''],
+      ['Press the input button: it is often called SOURCE or INPUT, or shows a rectangle with an arrow.', 'The button\'s name and position depend on the TV brand.'],
+      ['From the list, choose the HDMI input the device is plugged into (HDMI 1, HDMI 2…) and confirm with OK.', 'The HDMI number is written next to the socket, on the back or side of the TV.'],
+      ['To go back to normal channels, repeat and choose “TV”.', '']] } },
+  { id: 'sintonia', cat: 'casa', e: '📡', k: 'tv risintonizzare canali sintonizzazione ricerca automatica retune channels',
+    it: { t: 'Risintonizzare i canali della TV', d: 'Quando i canali spariscono o cambiano numero', title: 'Come risintonizzare i canali della TV', s: [
+      ['Premi il tasto MENU (o HOME / Impostazioni) sul telecomando.', 'I nomi dei menu cambiano secondo la marca della TV o del decoder: queste istruzioni sono generali.'],
+      ['Cerca la voce dei canali: spesso si chiama «Canali», «Installazione», «Trasmissione» o «Sistema».', ''],
+      ['Scegli «Sintonizzazione automatica» (o «Ricerca automatica») e, se te lo chiede, «Antenna» e «Digitale».', ''],
+      ['Se chiede l\'ordinamento automatico dei canali (LCN), rispondi di sì e avvia la ricerca. Aspetta qualche minuto senza toccare nulla.', ''],
+      ['Alla fine rispondi alle domande sullo schermo e conferma.', 'Se la TV non trova canali, controlla che il cavo dell\'antenna sia ben inserito.']] },
+    en: { t: 'Retune TV channels', d: 'When channels disappear or change number', title: 'How to retune TV channels', s: [
+      ['Press the MENU (or HOME / Settings) button on the remote.', 'Menu names depend on the TV or decoder brand: these steps are general.'],
+      ['Look for the channels item: often called “Channels”, “Installation”, “Broadcast” or “System”.', ''],
+      ['Choose “Automatic tuning” (or “Auto search”) and, if asked, “Aerial” (antenna) and “Digital”.', ''],
+      ['If it asks about automatic channel ordering (LCN), say yes and start the search. Wait a few minutes without touching anything.', ''],
+      ['At the end, answer the questions on screen and confirm.', 'If the TV finds no channels, check that the aerial cable is plugged in firmly.']] } },
+
+  /* ---- Per stranieri ---- */
+  { id: 'permesso', cat: 'str', e: '🛂', k: 'permesso di soggiorno pronto residence permit questura polizia',
+    it: { t: 'Controllare se il permesso di soggiorno è pronto', d: 'Sul sito della Polizia di Stato', title: 'Come controllare se il permesso di soggiorno è pronto', s: [
+      ['Prendi la ricevuta che ti hanno dato alle Poste quando hai spedito la domanda (kit).', 'Sulla ricevuta ci sono i codici che servono per il controllo.'],
+      ['Apri il sito della Polizia di Stato (poliziadistato.it), alla pagina per controllare online il permesso di soggiorno.', 'La pagina è spiegata anche in inglese, francese, spagnolo e ucraino.'],
+      ['Scrivi il codice della pratica che trovi sulla ricevuta e invia.', ''],
+      ['Leggi il risultato: se il permesso è pronto, vedi il nome e l\'indirizzo dell\'ufficio dove ritirarlo.', 'Per altre informazioni sulla pratica c\'è anche il Portale Immigrazione (portaleimmigrazione.it).'],
+      ['Vai a ritirarlo portando i documenti richiesti.', 'Il controllo online è gratuito: non fidarti di chi ti chiede soldi per «velocizzare» la pratica.']] },
+    en: { t: 'Check if your residence permit is ready', d: 'On the State Police website', title: 'How to check if your residence permit (permesso di soggiorno) is ready', s: [
+      ['Take the receipt you got at the post office when you sent your application (kit).', 'The receipt shows the codes you need for the check.'],
+      ['Open the State Police website (poliziadistato.it), on the page to check your residence permit online.', 'The page is also explained in English, French, Spanish and Ukrainian.'],
+      ['Type the application code shown on your receipt and submit it.', ''],
+      ['Read the result: if the permit is ready, you see the name and address of the office where you can collect it.', 'For more information about your application there is also the Portale Immigrazione (portaleimmigrazione.it).'],
+      ['Go and collect it, bringing the required documents.', 'The online check is free: be wary of anyone asking for money to “speed up” your application.']] } },
+  { id: 'cf', cat: 'str', e: '🆔', k: 'codice fiscale tessera sanitaria tax code health card asl agenzia entrate',
+    it: { t: 'Avere codice fiscale e tessera sanitaria', d: 'Per chi arriva in Italia', title: 'Come avere il codice fiscale e la tessera sanitaria', s: [
+      ['Il codice fiscale serve per quasi tutto: lavoro, casa, banca, medico. Spesso lo assegnano già lo Sportello Unico per l\'Immigrazione o la Questura quando chiedi il permesso di soggiorno.', ''],
+      ['Se non lo hai, prenota un appuntamento in un ufficio dell\'Agenzia delle Entrate e porta il modulo AA4/8 compilato e firmato.', 'Per il primo codice fiscale degli stranieri bisogna andare di persona.'],
+      ['Porta un documento valido: passaporto con visto (se serve), permesso di soggiorno o attestazione d\'identità del tuo consolato.', ''],
+      ['Ti danno un certificato con il codice fiscale: usalo finché non ti arriva a casa la tessera.', 'Vale solo il codice fiscale dato dall\'Agenzia delle Entrate, non quelli calcolati da siti o app.'],
+      ['Per la Tessera Sanitaria e il medico di famiglia, iscriviti al Servizio Sanitario Nazionale all\'ASL della tua zona.', 'Di solito servono documento, codice fiscale e permesso di soggiorno (o la ricevuta della richiesta). Chiedi all\'ASL cosa portare: dipende dal tipo di permesso.']] },
+    en: { t: 'Get a tax code and health card', d: 'For people arriving in Italy', title: 'How to get your tax code (codice fiscale) and health card', s: [
+      ['You need the tax code (codice fiscale) for almost everything: work, housing, bank, doctor. It is often already assigned by the Immigration Desk (Sportello Unico) or the Questura when you apply for your residence permit.', ''],
+      ['If you don\'t have one, book an appointment at an Agenzia delle Entrate office and bring form AA4/8, filled in and signed.', 'Foreigners must go in person for their first tax code.'],
+      ['Bring a valid document: passport with visa (if required), residence permit or an identity certificate from your consulate.', ''],
+      ['You get a certificate with your tax code: use it until the card arrives at your home.', 'Only the tax code issued by the Agenzia delle Entrate is valid, not ones calculated by websites or apps.'],
+      ['For the Health Card and a family doctor, register with the National Health Service at your local health authority (ASL).', 'You usually need an ID, tax code and residence permit (or the application receipt). Ask the ASL what to bring: it depends on your type of permit.']] } },
+  { id: 'prenotafacile', cat: 'str', e: '🗓️', k: 'prenotafacile questura appuntamento appointment immigration office',
+    it: { t: 'Appuntamento in Questura (Prenotafacile)', d: 'Per alcuni tipi di permesso di soggiorno', title: 'Come prenotare un appuntamento in Questura con Prenotafacile', s: [
+      ['Apri il sito ufficiale prenotafacile.poliziadistato.it.', 'Non tutte le Questure lo usano e vale solo per alcuni tipi di permesso (per esempio protezione, cure mediche, familiari di cittadini UE). Per molti altri permessi si usa il kit delle Poste.'],
+      ['Registrati con i tuoi dati, un\'email e un numero di telefono validi, poi apri il link che arriva via email.', 'Dopo l\'email hai circa 20 minuti per confermare il numero di telefono con un codice: tieni tutto a portata di mano.'],
+      ['Entra con il tuo account e scegli il tipo di pratica, l\'ufficio e la data.', 'Ogni persona può avere un solo appuntamento per ogni tipo di pratica.'],
+      ['Scarica la ricevuta dell\'appuntamento e portala allo sportello il giorno fissato.', 'Arriva almeno 10 minuti prima: se non ci sei quando chiamano il tuo numero, l\'appuntamento viene cancellato.'],
+      ['Se non puoi andare, cancella l\'appuntamento dal sito.', 'Prenota solo sul sito ufficiale e non fidarti di chi ti chiede soldi per avere un appuntamento.']] },
+    en: { t: 'Questura appointment (Prenotafacile)', d: 'For some types of residence permit', title: 'How to book a Questura appointment with Prenotafacile', s: [
+      ['Open the official website prenotafacile.poliziadistato.it.', 'Not all Questure use it and it is only for some permit types (for example protection, medical treatment, family members of EU citizens). For many other permits you use the post office kit.'],
+      ['Register with your details, a valid email and phone number, then open the link you receive by email.', 'After the email you have about 20 minutes to confirm your phone number with a code: keep everything at hand.'],
+      ['Log in and choose the type of application, the office and the date.', 'Each person can have only one appointment per type of application.'],
+      ['Download the appointment receipt and bring it to the desk on the day.', 'Arrive at least 10 minutes early: if you are not there when your number is called, the appointment is cancelled.'],
+      ['If you cannot go, cancel the appointment on the website.', 'Book only on the official website and be wary of anyone asking for money to get an appointment.']] } },
+
+  /* ---- Sicurezza ---- */
+  { id: 'truffe', cat: 'sic', e: '🚨', k: 'truffe truffa sms link scam fraud',
+    it: { t: 'Difendersi dalle truffe', d: 'SMS, telefonate e link sospetti', title: 'Come riconoscere una truffa', s: [['Se un SMS dice che il conto è bloccato e c\'è un link: NON toccarlo.', 'Banca e Poste non mandano mai link per sbloccare il conto.'], ['Nessuno della banca ti chiederà mai PIN, password o codici al telefono.', 'Se te li chiedono, è una truffa: chiudi la chiamata.'], ['Se un «figlio» scrive da un numero nuovo e chiede soldi: fermati.', 'Chiama il suo numero vecchio per controllare.'], ['Nel dubbio non fare niente e chiama me.', '']] },
+    en: { t: 'Protect yourself from scams', d: 'Suspicious SMS, calls and links', title: 'How to recognise a scam', s: [['If an SMS says your account is blocked and contains a link: DON\'T tap it.', 'Banks and Poste never send links to unblock your account.'], ['Nobody from the bank will ever ask for your PIN, password or codes on the phone.', 'If they do, it is a scam: hang up.'], ['If a “son” or “daughter” writes from a new number asking for money: stop.', 'Call their old number to check.'], ['When in doubt, do nothing and call me.', '']] } },
+  { id: 'codici', cat: 'sic', e: '🛡️', k: 'spid otp codici pin password sicurezza security codes',
+    it: { t: 'Proteggere SPID, codici e conto', d: 'Le regole d\'oro: OTP e PIN mai a nessuno', title: 'Come proteggere SPID, codici e conto', s: [
+      ['Password, PIN, codici OTP (quelli che arrivano per SMS o nell\'app) e codici SPID sono solo tuoi. Non dirli a nessuno.', 'Banca e Poste non te li chiedono mai al telefono, per SMS o email.'],
+      ['Se arriva una notifica per autorizzare un accesso o un pagamento che non hai fatto tu, rifiutala.', ''],
+      ['Non toccare i link negli SMS o nelle email che parlano di conti bloccati, multe, pacchi o rimborsi.', 'Apri sempre tu l\'app ufficiale o scrivi tu l\'indirizzo del sito.'],
+      ['Se qualcuno ti mette fretta o paura, fermati: è il trucco dei truffatori.', 'Richiama tu la banca o la persona usando un numero che conosci già.'],
+      ['Se hai dato un codice per sbaglio, chiama subito la tua banca o il tuo gestore SPID per bloccare tutto.', '']] },
+    en: { t: 'Protect SPID, codes and bank account', d: 'Golden rules: never share OTP or PIN', title: 'How to protect SPID, codes and your bank account', s: [
+      ['Passwords, PINs, OTP codes (the ones that arrive by SMS or in an app) and SPID codes are yours only. Never tell anyone.', 'Banks and Poste never ask for them by phone, SMS or email.'],
+      ['If you get a notification to approve a login or payment you didn\'t make, reject it.', ''],
+      ['Don\'t tap links in SMS or emails about blocked accounts, fines, parcels or refunds.', 'Always open the official app yourself or type the website address yourself.'],
+      ['If someone rushes or scares you, stop: that is the scammers\' trick.', 'Call the bank or the person back using a number you already know.'],
+      ['If you gave out a code by mistake, call your bank or SPID provider immediately to block everything.', '']] } }
+];
+
+/* Traduzioni dei modelli: francese, arabo, cinese semplificato */
+const TR = {};
+TR.fr = {
+vuota:{t:"Guide vierge",d:"Partir de zéro, pour n'importe quelle appli ou écran",title:"",s:[["",""]]},
+"wa-video":{t:"Appel vidéo WhatsApp",d:"Appeler la famille en vidéo",title:"Comment passer un appel vidéo sur WhatsApp",s:[["Touchez l'icône verte de WhatsApp.",""],["Touchez le nom de la personne que vous voulez appeler.",""],["En haut à droite, touchez la caméra.","Ne touchez pas le combiné : c'est un appel vocal normal."],["Attendez qu'elle réponde. Tenez le téléphone devant votre visage.",""],["Pour terminer, touchez le bouton rouge.",""]]},
+"wa-foto":{t:"Envoyer une photo sur WhatsApp",d:"Choisir une photo et l'envoyer",title:"Comment envoyer une photo sur WhatsApp",s:[["Ouvrez WhatsApp et touchez le nom de la personne.",""],["En bas, touchez le trombone (ou le +).",""],["Touchez « Galerie » (ou « Photos »).",""],["Touchez la photo à envoyer.",""],["Touchez la flèche verte pour envoyer.","Si la flèche n'apparaît pas, attendez une seconde."]]},
+foto:{t:"Prendre une photo et la retrouver",d:"Appareil photo et Galerie",title:"Comment prendre une photo et la retrouver",s:[["Touchez l'icône de l'appareil photo.",""],["Cadrez et touchez le grand bouton blanc en bas.",""],["Pour la revoir, touchez le petit carré en bas à gauche.","Ou ouvrez l'appli Galerie / Photos."]]},
+volume:{t:"Monter le volume et la sonnerie",d:"Pour entendre quand on vous appelle",title:"Comment monter le volume de la sonnerie",s:[["Appuyez sur la touche du volume, sur le côté du téléphone : celle du haut monte le son.",""],["Si une barre apparaît, touchez les trois points ou la roue dentée.",""],["Faites glisser vers le haut la barre « Sonnerie ».",""]]},
+spid:{t:"Se connecter à un site avec SPID",d:"Avec l'appli de votre fournisseur (par exemple PosteID)",title:"Comment se connecter à un site avec SPID (identité numérique italienne)",s:[["Sur le site ou l'appli du service (par exemple INPS, Agenzia delle Entrate, votre mairie), touchez le bouton « Entra con SPID » (Se connecter avec SPID).",""],["Choisissez dans la liste votre fournisseur SPID, l'organisme qui vous a fourni SPID (par exemple Poste Italiane).","Chaque fournisseur a des écrans un peu différents : ces étapes sont générales."],["Tapez votre identifiant et votre mot de passe, puis confirmez.",""],["Le fournisseur demande une confirmation supplémentaire : en général une notification dans son appli, un code temporaire ou un SMS.","Avec PosteID, vous pouvez choisir la notification dans l'appli PosteID ou créer un code PIN temporaire dans l'appli."],["Ouvrez l'appli du fournisseur et autorisez l'accès avec votre code, votre empreinte ou votre visage.","Autorisez SEULEMENT si c'est vous qui venez de demander l'accès. Si une demande arrive sans que vous l'ayez faite, refusez-la."],["Revenez sur le site : vous êtes connecté. Quand vous avez fini, déconnectez-vous.",""],["N'oubliez pas : le mot de passe, le PIN et les codes SPID sont à vous seul.","Aucun opérateur sérieux ne les demande par téléphone, SMS ou e-mail. Si quelqu'un les demande, c'est une arnaque."]]},
+cie:{t:"Se connecter avec la carte d'identité électronique",d:"CIE avec l'appli CieID",title:"Comment se connecter avec la carte d'identité électronique (CIE)",s:[["La première fois : téléchargez l'appli officielle CieID et enregistrez votre carte. Il faut le code PIN à 8 chiffres.","Vous avez reçu les 4 premiers chiffres du PIN lors de la demande de la carte, les 4 autres sont arrivés avec la carte."],["Quand l'appli le demande, posez la carte au dos du téléphone et gardez-la immobile quelques secondes.","Il faut un téléphone avec NFC. S'il ne lit pas la carte, vérifiez que le NFC est activé dans les réglages."],["Sur le site du service, touchez « Entra con CIE » (Se connecter avec la CIE).","Sur les téléphones Android, utilisez le navigateur Chrome."],["L'appli CieID s'ouvre : tapez les 4 derniers chiffres du PIN (ou utilisez votre empreinte) et reposez la carte sur le téléphone.","Si vous vous connectez depuis un ordinateur, suivez ce que propose la page (par exemple scanner un code QR avec l'appli CieID)."],["C'est fait : vous êtes connecté au service.","Ne donnez jamais le PIN de la carte à personne, même au téléphone."]]},
+io:{t:"Appli IO : messages et documents",d:"Lire les avis des administrations, avoir la tessera sanitaria et le permis dans le téléphone",title:"Comment utiliser l'appli IO : messages et documents",s:[["Ouvrez l'appli IO et connectez-vous avec SPID ou la CIE (après la première fois, le code de déverrouillage choisi suffit).",""],["Dans les messages, vous trouvez les avis de la mairie, de l'INPS, de l'Agenzia delle Entrate et d'autres administrations. Touchez un message pour le lire.","Si le message contient un avis à payer, le bouton « Paga » (Payer) se trouve en bas."],["Pour avoir vos documents dans le téléphone, ouvrez le Portafoglio (Portefeuille) et choisissez d'ajouter un document.","On peut ajouter la tessera sanitaria (carte de santé), le permis de conduire (format carte) et la Carte européenne du handicap. Pas la carte d'identité."],["Choisissez le document et confirmez votre identité quand l'appli le demande.","Pour le permis, il faut parfois quelques minutes : une notification arrive quand il est prêt."],["Méfiez-vous des SMS ou e-mails « de IO » qui contiennent des liens.","Ouvrez toujours directement l'appli IO, téléchargée depuis les boutiques officielles."]]},
+inps:{t:"Bulletin de pension INPS",d:"Voir le montant et les retenues",title:"Comment voir votre bulletin de pension INPS (cedolino)",s:[["Allez sur le site inps.it ou ouvrez l'appli officielle INPS Mobile.",""],["Cherchez le service « Cedolino pensione » (bulletin de pension).","Sur le site, vous pouvez l'écrire dans la case de recherche."],["Connectez-vous avec SPID, la CIE ou la CNS.",""],["Choisissez le mois et ouvrez le bulletin : vous voyez le montant et les éventuelles retenues.","Ce service permet aussi de comparer deux bulletins et de télécharger la Certificazione Unica (attestation fiscale)."],["Pour l'imprimer ou l'enregistrer, cherchez l'option pour le télécharger en PDF.","Méfiez-vous des SMS ou e-mails « de l'INPS » avec des liens : passez toujours par le site ou l'appli officiels."]]},
+fse:{t:"Télécharger un compte rendu médical (Fascicolo Sanitario)",d:"Résultats d'examens, lettres de sortie, ordonnances",title:"Comment télécharger un compte rendu depuis le dossier médical électronique (Fascicolo Sanitario)",s:[["Allez sur fascicolosanitario.gov.it et choisissez « Accedi al Fascicolo » (Accéder au dossier).","Beaucoup de Régions ont aussi leur propre appli pour le dossier."],["Sur la carte, touchez votre Région, celle où vous avez votre médecin de famille.","Chaque Région a des écrans différents : le nom des menus peut changer."],["Connectez-vous avec SPID, la CIE ou la tessera sanitaria (CNS).",""],["Ouvrez la rubrique des documents et comptes rendus, puis cherchez l'examen par date ou par type.",""],["Touchez le compte rendu pour l'ouvrir et choisissez de le télécharger ou de l'imprimer.","Pour certains examens (par exemple radios), le CD ou les images sont parfois à retirer sur place. Si un ticket (participation) est à payer, le compte rendu peut n'apparaître qu'après le paiement."]]},
+ricetta:{t:"Retirer des médicaments avec l'ordonnance électronique",d:"Code NRE et tessera sanitaria",title:"Comment retirer des médicaments avec l'ordonnance électronique",s:[["Le médecin fait l'ordonnance électronique : il peut vous donner un aide-mémoire papier, ou le code de l'ordonnance (NRE) par SMS, e-mail ou dans le Fascicolo Sanitario.","La façon de la recevoir dépend de la Région et du médecin : demandez-lui."],["Allez à la pharmacie avec votre tessera sanitaria (carte de santé).",""],["Montrez au pharmacien le code NRE (sur le téléphone ou sur l'aide-mémoire).","Le pharmacien trouve l'ordonnance avec le code NRE et votre codice fiscale."],["Prenez les médicaments, payez l'éventuel ticket (participation) et gardez le ticket de caisse.","Le ticket de caisse avec votre codice fiscale sert pour les déductions d'impôts."]]},
+cup:{t:"Réserver une visite médicale en ligne (CUP)",d:"Avec l'ordonnance du médecin",title:"Comment réserver une visite ou un examen en ligne (CUP)",s:[["Gardez sous la main votre codice fiscale et l'ordonnance du médecin avec le code NRE.",""],["Ouvrez le site ou l'appli CUP de votre Région ou de votre ASL (agence sanitaire locale).","Chaque Région a son système : cherchez « CUP online » avec le nom de votre Région et utilisez seulement le site officiel."],["Entrez votre codice fiscale et le numéro de l'ordonnance (NRE). Certaines Régions demandent de se connecter avec SPID ou la CIE.",""],["Choisissez parmi les dates et les lieux proposés et confirmez la réservation.","La lettre de priorité sur l'ordonnance (U, B, D, P) fixe le délai. Certaines priorités, comme les urgences, ne se réservent pas en ligne : appelez ou allez au guichet CUP."],["Gardez la confirmation ou faites une capture d'écran. Si vous ne pouvez pas y aller, annulez à temps.","Dans beaucoup de Régions, si vous n'annulez pas, vous devez quand même payer le ticket."]]},
+pagopa:{t:"Payer un avis pagoPA",d:"Avec l'appli IO : code QR ou code de l'avis",title:"Comment payer un avis pagoPA avec l'appli IO",s:[["Prenez l'avis de paiement pagoPA (papier ou PDF) : il y a le code QR, le Codice Avviso (code de l'avis) et le codice fiscale de l'administration.","Vous pouvez aussi payer avec l'appli de votre banque, à la Poste, au bureau de tabac et partout où il y a le logo pagoPA."],["Ouvrez l'appli IO et connectez-vous.",""],["Touchez « Inquadra » (Scanner) dans le menu du bas et visez le code QR de l'avis.","Sinon, vous pouvez importer l'avis ou taper le Codice Avviso et le codice fiscale de l'administration."],["Vérifiez bien l'administration, le motif et le montant.","Si l'avis est arrivé comme message dans IO, ouvrez-le et touchez « Paga » (Payer) en bas."],["Choisissez le moyen de paiement et, si on vous le demande, qui gérera le paiement. Puis touchez « Paga ».","Les frais peuvent changer selon qui gère le paiement."],["Autorisez le paiement (par exemple dans l'appli de la banque). Le reçu arrive dans IO.","Méfiez-vous des SMS ou e-mails avec un lien pour « payer une amende » : payez seulement de vrais avis, via IO ou votre banque."]]},
+bonifico:{t:"Faire un virement depuis l'appli de la banque",d:"En sécurité, en vérifiant IBAN et nom",title:"Comment faire un virement (bonifico) depuis l'appli de la banque",s:[["Ouvrez l'appli de votre banque et connectez-vous avec votre code, votre empreinte ou votre visage.","Chaque banque a des écrans différents : le nom des menus peut changer."],["Cherchez la rubrique des paiements et choisissez le virement (bonifico).",""],["Écrivez le nom du destinataire et l'IBAN (en Italie, il commence par IT et a 27 caractères), puis le montant et le motif.","La banque vérifie si le nom et l'IBAN correspondent et vous prévient sinon : dans ce cas, ARRÊTEZ et vérifiez."],["Vérifiez tout et confirmez avec le code ou la notification de la banque.","Le virement instantané arrive en quelques secondes et ne peut pas être annulé."],["Si quelqu'un vous presse ou vous fait peur pour obtenir un virement (un « proche » en difficulté, un faux employé), ne le faites pas.","Rappelez vous-même la personne ou la banque avec un numéro que vous connaissez déjà. La banque ne demande jamais de mot de passe ni de code."]]},
+"tv-on":{t:"Allumer la télé et trouver une chaîne",d:"Télécommande et décodeur",title:"Comment allumer la télé et trouver une chaîne",s:[["Appuyez sur le bouton rouge en haut de la télécommande.",""],["Tapez le numéro de la chaîne avec les touches des chiffres.","Par exemple : 1 pour Rai 1, 5 pour Canale 5."],["Si l'écran affiche « Pas de signal », appuyez sur la touche SOURCE et choisissez « TV ».",""]]},
+hdmi:{t:"Changer la source de la télé (HDMI)",d:"Pour regarder le décodeur, la clé TV, la console…",title:"Comment changer la source de la télé (HDMI)",s:[["Prenez la télécommande de la télé (pas celle du décodeur).",""],["Appuyez sur la touche de la source : souvent appelée SOURCE ou INPUT, ou avec l'icône d'un rectangle et d'une flèche.","Le nom et l'emplacement de la touche changent selon la marque de la télé."],["Dans la liste, choisissez l'entrée HDMI où l'appareil est branché (HDMI 1, HDMI 2…) et confirmez avec OK.","Le numéro HDMI est écrit à côté de la prise, derrière ou sur le côté de la télé."],["Pour revenir aux chaînes normales, recommencez et choisissez « TV ».",""]]},
+sintonia:{t:"Rechercher à nouveau les chaînes",d:"Quand des chaînes disparaissent ou changent de numéro",title:"Comment refaire la recherche des chaînes de la télé",s:[["Appuyez sur la touche MENU (ou HOME / Réglages) de la télécommande.","Le nom des menus change selon la marque de la télé ou du décodeur : ces étapes sont générales."],["Cherchez la rubrique des chaînes : souvent appelée « Chaînes », « Installation », « Diffusion » ou « Système ».",""],["Choisissez « Recherche automatique » et, si on vous le demande, « Antenne » et « Numérique ».",""],["Si on vous propose le classement automatique des chaînes (LCN), répondez oui et lancez la recherche. Attendez quelques minutes sans rien toucher.",""],["À la fin, répondez aux questions à l'écran et confirmez.","Si la télé ne trouve aucune chaîne, vérifiez que le câble de l'antenne est bien branché."]]},
+permesso:{t:"Vérifier si le permis de séjour est prêt",d:"Sur le site de la Polizia di Stato",title:"Comment vérifier si votre permis de séjour (permesso di soggiorno) est prêt",s:[["Prenez le reçu qu'on vous a donné à la Poste quand vous avez envoyé la demande (kit).","Sur le reçu se trouvent les codes nécessaires pour la vérification."],["Ouvrez le site de la Polizia di Stato (poliziadistato.it), à la page pour vérifier en ligne le permis de séjour.","La page est aussi expliquée en anglais, français, espagnol et ukrainien."],["Tapez le code du dossier écrit sur le reçu et validez.",""],["Lisez le résultat : si le permis est prêt, vous voyez le nom et l'adresse du bureau où le retirer.","Pour d'autres informations sur votre dossier, il y a aussi le Portale Immigrazione (portaleimmigrazione.it)."],["Allez le retirer avec les documents demandés.","La vérification en ligne est gratuite : méfiez-vous de quiconque demande de l'argent pour « accélérer » votre dossier."]]},
+cf:{t:"Obtenir le codice fiscale et la tessera sanitaria",d:"Pour les personnes qui arrivent en Italie",title:"Comment obtenir le codice fiscale (numéro fiscal) et la tessera sanitaria (carte de santé)",s:[["Le codice fiscale sert pour presque tout : travail, logement, banque, médecin. Souvent, il est déjà attribué par le Sportello Unico per l'Immigrazione ou la Questura quand vous demandez le permis de séjour.",""],["Si vous ne l'avez pas, prenez rendez-vous dans un bureau de l'Agenzia delle Entrate et apportez le formulaire AA4/8 rempli et signé.","Pour le premier codice fiscale, les étrangers doivent y aller en personne."],["Apportez un document valable : passeport avec visa (si nécessaire), permis de séjour ou attestation d'identité de votre consulat.",""],["On vous donne un certificat avec votre codice fiscale : utilisez-le jusqu'à ce que la carte arrive chez vous.","Seul le codice fiscale donné par l'Agenzia delle Entrate est valable, pas ceux calculés par des sites ou des applis."],["Pour la tessera sanitaria et un médecin de famille, inscrivez-vous au Service sanitaire national auprès de l'ASL de votre zone.","En général, il faut une pièce d'identité, le codice fiscale et le permis de séjour (ou le reçu de la demande). Demandez à l'ASL quoi apporter : cela dépend du type de permis."]]},
+prenotafacile:{t:"Rendez-vous à la Questura (Prenotafacile)",d:"Pour certains types de permis de séjour",title:"Comment prendre rendez-vous à la Questura avec Prenotafacile",s:[["Ouvrez le site officiel prenotafacile.poliziadistato.it.","Toutes les Questure ne l'utilisent pas, et il ne concerne que certains permis (par exemple protection, soins médicaux, membres de la famille de citoyens de l'UE). Pour beaucoup d'autres permis, on utilise le kit de la Poste."],["Inscrivez-vous avec vos données, un e-mail et un numéro de téléphone valables, puis ouvrez le lien reçu par e-mail.","Après l'e-mail, vous avez environ 20 minutes pour confirmer votre numéro avec un code : gardez tout sous la main."],["Connectez-vous et choisissez le type de dossier, le bureau et la date.","Chaque personne ne peut avoir qu'un seul rendez-vous par type de dossier."],["Téléchargez le reçu du rendez-vous et apportez-le au guichet le jour prévu.","Arrivez au moins 10 minutes avant : si vous n'êtes pas là quand on appelle votre numéro, le rendez-vous est annulé."],["Si vous ne pouvez pas y aller, annulez le rendez-vous sur le site.","Réservez seulement sur le site officiel et méfiez-vous de quiconque demande de l'argent pour un rendez-vous."]]},
+truffe:{t:"Se protéger des arnaques",d:"SMS, appels et liens suspects",title:"Comment reconnaître une arnaque",s:[["Si un SMS dit que votre compte est bloqué et contient un lien : NE le touchez PAS.","Les banques et la Poste n'envoient jamais de lien pour débloquer un compte."],["Personne de la banque ne vous demandera jamais votre PIN, mot de passe ou codes au téléphone.","Si on vous les demande, c'est une arnaque : raccrochez."],["Si un « fils » ou une « fille » écrit depuis un nouveau numéro pour demander de l'argent : arrêtez-vous.","Appelez son ancien numéro pour vérifier."],["En cas de doute, ne faites rien et appelez-moi.",""]]},
+codici:{t:"Protéger SPID, codes et compte bancaire",d:"Les règles d'or : jamais d'OTP ni de PIN à personne",title:"Comment protéger SPID, vos codes et votre compte",s:[["Mots de passe, PIN, codes OTP (ceux qui arrivent par SMS ou dans une appli) et codes SPID sont à vous seul. Ne les dites à personne.","La banque et la Poste ne les demandent jamais par téléphone, SMS ou e-mail."],["Si vous recevez une notification pour autoriser un accès ou un paiement que vous n'avez pas fait, refusez-la.",""],["Ne touchez pas les liens des SMS ou e-mails qui parlent de compte bloqué, d'amende, de colis ou de remboursement.","Ouvrez toujours vous-même l'appli officielle ou tapez vous-même l'adresse du site."],["Si quelqu'un vous presse ou vous fait peur, arrêtez-vous : c'est la ruse des escrocs.","Rappelez vous-même la banque ou la personne avec un numéro que vous connaissez déjà."],["Si vous avez donné un code par erreur, appelez tout de suite votre banque ou votre fournisseur SPID pour tout bloquer.",""]]}
+};
+TR.ar = {
+vuota:{t:"دليل فارغ",d:"ابدأ من الصفر، لأي تطبيق أو شاشة",title:"",s:[["",""]]},
+"wa-video":{t:"مكالمة فيديو على واتساب",d:"اتصل بعائلتك بالفيديو",title:"كيف تُجري مكالمة فيديو على واتساب",s:[["اضغط على أيقونة واتساب الخضراء.",""],["اضغط على اسم الشخص الذي تريد الاتصال به.",""],["في أعلى الشاشة، اضغط على رمز الكاميرا.","لا تضغط على رمز سماعة الهاتف: فهو للمكالمة الصوتية العادية."],["انتظر حتى يرد. أمسك الهاتف أمام وجهك.",""],["للإنهاء، اضغط على الزر الأحمر.",""]]},
+"wa-foto":{t:"إرسال صورة على واتساب",d:"اختر صورة وأرسلها",title:"كيف ترسل صورة على واتساب",s:[["افتح واتساب واضغط على اسم الشخص.",""],["في الأسفل، اضغط على مشبك الورق (أو علامة +).",""],["اضغط على «المعرض» (أو «الصور»).",""],["اضغط على الصورة التي تريد إرسالها.",""],["اضغط على السهم الأخضر للإرسال.","إذا لم يظهر السهم، انتظر ثانية."]]},
+foto:{t:"التقاط صورة والعثور عليها",d:"الكاميرا والمعرض",title:"كيف تلتقط صورة وتجدها مرة أخرى",s:[["اضغط على أيقونة الكاميرا.",""],["وجّه الكاميرا واضغط على الزر الأبيض الكبير في الأسفل.",""],["لرؤيتها مرة أخرى، اضغط على المربع الصغير في أسفل الشاشة.","أو افتح تطبيق المعرض / الصور."]]},
+volume:{t:"رفع الصوت ونغمة الرنين",d:"لتسمع عندما يتصل بك أحد",title:"كيف ترفع صوت نغمة الرنين",s:[["اضغط على زر الصوت في جانب الهاتف: الزر العلوي يرفع الصوت.",""],["إذا ظهر شريط، اضغط على النقاط الثلاث أو على رمز الترس.",""],["اسحب شريط «نغمة الرنين» إلى الأعلى.",""]]},
+spid:{t:"الدخول إلى موقع باستخدام SPID",d:"عبر تطبيق مزوّد الخدمة (مثل PosteID)",title:"كيف تدخل إلى موقع باستخدام SPID (الهوية الرقمية الإيطالية)",s:[["في موقع أو تطبيق الخدمة (مثل INPS أو Agenzia delle Entrate أو البلدية)، اضغط على زر «Entra con SPID» (الدخول باستخدام SPID).",""],["اختر من القائمة مزوّد SPID الخاص بك، أي الجهة التي أعطتك SPID (مثل Poste Italiane).","لكل مزوّد شاشات مختلفة قليلاً: هذه الخطوات عامة."],["اكتب اسم المستخدم وكلمة المرور، ثم أكّد.",""],["يطلب المزوّد تأكيداً إضافياً: عادةً إشعار في تطبيقه، أو رمز مؤقت، أو رسالة SMS.","مع PosteID يمكنك اختيار الإشعار في تطبيق PosteID أو إنشاء رمز PIN مؤقت داخل التطبيق."],["افتح تطبيق المزوّد ووافق على الدخول برمزك أو ببصمتك أو بوجهك.","وافق فقط إذا كنت أنت من طلب الدخول للتو. إذا وصلك طلب لم تقم به، ارفضه."],["عد إلى الموقع: لقد دخلت. عندما تنتهي، سجّل الخروج من الموقع.",""],["تذكّر: كلمة المرور ورمز PIN ورموز SPID خاصة بك وحدك.","لا يطلبها أي موظف حقيقي عبر الهاتف أو الرسائل أو البريد الإلكتروني. إذا طلبها أحد، فهي عملية احتيال."]]},
+cie:{t:"الدخول ببطاقة الهوية الإلكترونية",d:"بطاقة CIE مع تطبيق CieID",title:"كيف تدخل باستخدام بطاقة الهوية الإلكترونية (CIE)",s:[["في المرة الأولى: حمّل التطبيق الرسمي CieID وسجّل بطاقتك. تحتاج إلى رمز PIN من 8 أرقام.","حصلت على أول 4 أرقام من الرمز عند طلب البطاقة، والأرقام الأربعة الأخرى وصلت مع البطاقة."],["عندما يطلب التطبيق، ضع البطاقة على ظهر الهاتف وأبقها ثابتة لبضع ثوانٍ.","تحتاج إلى هاتف فيه NFC. إذا لم يقرأ البطاقة، تأكد من أن NFC مفعّل في الإعدادات."],["في موقع الخدمة، اضغط على «Entra con CIE» (الدخول باستخدام CIE).","في هواتف أندرويد استخدم متصفح Chrome."],["يفتح تطبيق CieID: اكتب آخر 4 أرقام من رمز PIN (أو استخدم البصمة) وضع البطاقة على الهاتف مرة أخرى.","إذا كنت تدخل من الكمبيوتر، اتبع ما تقترحه الصفحة (مثلاً مسح رمز QR بتطبيق CieID)."],["تم: لقد دخلت إلى الخدمة.","لا تعطِ رمز PIN الخاص بالبطاقة لأي أحد، ولا حتى عبر الهاتف."]]},
+io:{t:"تطبيق IO: الرسائل والوثائق",d:"قراءة إشعارات الجهات الحكومية، وحفظ البطاقة الصحية ورخصة القيادة في الهاتف",title:"كيف تستخدم تطبيق IO: الرسائل والوثائق",s:[["افتح تطبيق IO وادخل باستخدام SPID أو CIE (بعد المرة الأولى يكفي رمز فتح القفل الذي اخترته).",""],["في الرسائل تجد إشعارات البلدية وINPS وAgenzia delle Entrate وجهات أخرى. اضغط على رسالة لقراءتها.","إذا كانت الرسالة تحتوي على مبلغ للدفع، تجد زر «Paga» (ادفع) في الأسفل."],["لحفظ وثائقك في الهاتف، افتح Portafoglio (المحفظة) واختر إضافة وثيقة.","يمكن إضافة tessera sanitaria (البطاقة الصحية)، ورخصة القيادة (بشكل بطاقة)، والبطاقة الأوروبية للإعاقة. أما بطاقة الهوية فلا."],["اختر الوثيقة وأكّد هويتك عندما يطلب التطبيق ذلك.","قد تحتاج رخصة القيادة إلى بضع دقائق: يصلك إشعار عندما تصبح جاهزة."],["احذر من رسائل SMS أو البريد الإلكتروني «من IO» التي تحتوي على روابط.","افتح دائماً تطبيق IO مباشرة، بعد تحميله من المتاجر الرسمية."]]},
+inps:{t:"كشف المعاش التقاعدي من INPS",d:"رؤية المبلغ والاقتطاعات",title:"كيف ترى كشف معاشك التقاعدي من INPS (cedolino)",s:[["اذهب إلى موقع inps.it أو افتح التطبيق الرسمي INPS Mobile.",""],["ابحث عن خدمة «Cedolino pensione» (كشف المعاش).","في الموقع يمكنك كتابتها في خانة البحث."],["ادخل باستخدام SPID أو CIE أو CNS.",""],["اختر الشهر وافتح الكشف: ترى المبلغ والاقتطاعات إن وجدت.","تسمح الخدمة نفسها أيضاً بمقارنة كشفين وتحميل Certificazione Unica (الشهادة الضريبية)."],["لطباعته أو حفظه، ابحث عن خيار تحميله بصيغة PDF.","احذر من الرسائل «من INPS» التي فيها روابط: ادخل دائماً من الموقع أو التطبيق الرسمي."]]},
+fse:{t:"تحميل تقرير طبي من Fascicolo Sanitario",d:"نتائج التحاليل، تقارير الخروج من المستشفى، الوصفات",title:"كيف تحمّل تقريراً طبياً من الملف الصحي الإلكتروني (Fascicolo Sanitario)",s:[["اذهب إلى fascicolosanitario.gov.it واختر «Accedi al Fascicolo» (الدخول إلى الملف).","لكثير من الأقاليم تطبيق خاص بها للملف الصحي أيضاً."],["على الخريطة، اضغط على إقليمك، أي الإقليم الذي تتلقى فيه الرعاية الصحية.","لكل إقليم شاشات مختلفة: قد تتغير أسماء القوائم."],["ادخل باستخدام SPID أو CIE أو tessera sanitaria (CNS).",""],["افتح قسم الوثائق والتقارير وابحث عن الفحص حسب التاريخ أو النوع.",""],["اضغط على التقرير لفتحه واختر تحميله أو طباعته.","لبعض الفحوص (مثل الأشعة) قد يجب استلام القرص أو الصور من المركز نفسه. إذا كان هناك رسم (ticket) للدفع، فقد لا يظهر التقرير إلا بعد الدفع."]]},
+ricetta:{t:"استلام الأدوية بالوصفة الإلكترونية",d:"رمز NRE والبطاقة الصحية",title:"كيف تستلم الأدوية بالوصفة الطبية الإلكترونية",s:[["يكتب الطبيب الوصفة الإلكترونية: قد يعطيك ورقة تذكير، أو رمز الوصفة (NRE) عبر SMS أو البريد الإلكتروني أو في Fascicolo Sanitario.","طريقة استلامها تختلف حسب الإقليم والطبيب: اسأل طبيبك."],["اذهب إلى الصيدلية ومعك tessera sanitaria (البطاقة الصحية).",""],["أرِ الصيدلي رمز NRE (على الهاتف أو على ورقة التذكير).","يجد الصيدلي الوصفة بواسطة رمز NRE وcodice fiscale (الرقم الضريبي) الخاص بك."],["استلم الأدوية، وادفع الرسم (ticket) إن وجد، واحتفظ بالإيصال.","الإيصال الذي عليه codice fiscale مفيد للخصومات الضريبية."]]},
+cup:{t:"حجز موعد طبي عبر الإنترنت (CUP)",d:"بوصفة من الطبيب",title:"كيف تحجز زيارة أو فحصاً طبياً عبر الإنترنت (CUP)",s:[["جهّز codice fiscale (الرقم الضريبي) ووصفة الطبيب التي عليها رمز NRE.",""],["افتح موقع أو تطبيق CUP الخاص بإقليمك أو بـ ASL (الهيئة الصحية المحلية).","لكل إقليم نظامه الخاص: ابحث عن «CUP online» مع اسم إقليمك، واستخدم الموقع الرسمي فقط."],["أدخل codice fiscale ورقم الوصفة (NRE). بعض الأقاليم تطلب الدخول باستخدام SPID أو CIE.",""],["اختر من المواعيد والأماكن المقترحة ثم أكّد الحجز.","حرف الأولوية على الوصفة (U أو B أو D أو P) يحدد مدة الانتظار. بعض الأولويات، مثل الحالات العاجلة، لا تُحجز عبر الإنترنت: اتصل أو اذهب إلى شباك CUP."],["احفظ التأكيد أو التقط صورة للشاشة. إذا لم تستطع الذهاب، ألغِ الموعد في الوقت المناسب.","في كثير من الأقاليم، إذا لم تُلغِ الموعد يجب أن تدفع الرسم (ticket) رغم ذلك."]]},
+pagopa:{t:"دفع إشعار pagoPA",d:"بتطبيق IO: رمز QR أو رمز الإشعار",title:"كيف تدفع إشعار pagoPA بتطبيق IO",s:[["خذ إشعار الدفع pagoPA (ورقي أو PDF): عليه رمز QR وCodice Avviso (رمز الإشعار) وcodice fiscale الخاص بالجهة.","يمكنك الدفع أيضاً بتطبيق البنك، أو في مكتب البريد، أو عند محل التبغ (tabaccheria)، وفي كل مكان عليه شعار pagoPA."],["افتح تطبيق IO وادخل.",""],["اضغط على «Inquadra» (مسح) في القائمة السفلية ووجّه الكاميرا نحو رمز QR.","أو يمكنك تحميل الإشعار أو كتابة Codice Avviso وcodice fiscale الخاص بالجهة يدوياً."],["تحقق جيداً من الجهة والسبب والمبلغ.","إذا وصلك الإشعار كرسالة في IO، افتحها واضغط على «Paga» (ادفع) في الأسفل."],["اختر طريقة الدفع، وإذا طُلب منك، اختر من سيتولى عملية الدفع. ثم اضغط على «Paga».","قد تختلف العمولة حسب الجهة التي تتولى الدفع."],["وافق على الدفع (مثلاً في تطبيق البنك). يصلك الإيصال في IO.","احذر من الرسائل التي فيها رابط «لدفع غرامة»: ادفع فقط الإشعارات الحقيقية، عبر IO أو بنكك."]]},
+bonifico:{t:"إجراء تحويل بنكي من تطبيق البنك",d:"بأمان، مع التحقق من IBAN والاسم",title:"كيف تُجري تحويلاً بنكياً (bonifico) من تطبيق البنك",s:[["افتح تطبيق بنكك وادخل برمزك أو ببصمتك أو بوجهك.","لكل بنك شاشات مختلفة: قد تتغير أسماء القوائم."],["ابحث عن قسم المدفوعات واختر التحويل البنكي (bonifico).",""],["اكتب اسم المستفيد ورقم IBAN (في إيطاليا يبدأ بـ IT ويتكون من 27 خانة)، ثم المبلغ وسبب التحويل.","يتحقق البنك من تطابق الاسم مع IBAN وينبهك إذا لم يتطابقا: عندها توقّف وتحقّق."],["راجع كل شيء وأكّد برمز البنك أو بالإشعار.","التحويل الفوري يصل خلال ثوانٍ ولا يمكن إلغاؤه."],["إذا استعجلك أحد أو أخافك لتقوم بتحويل (مثل «قريب» في ورطة أو موظف مزيف)، فلا تفعل.","اتصل أنت بالشخص أو بالبنك على رقم تعرفه مسبقاً. البنك لا يطلب منك أبداً كلمة المرور أو الرموز."]]},
+"tv-on":{t:"تشغيل التلفاز وإيجاد القناة",d:"جهاز التحكم عن بُعد وجهاز الاستقبال",title:"كيف تشغّل التلفاز وتجد القناة",s:[["اضغط على الزر الأحمر في أعلى جهاز التحكم.",""],["اكتب رقم القناة بأزرار الأرقام.","مثلاً 1 لقناة Rai 1، و5 لقناة Canale 5."],["إذا ظهر على الشاشة «لا توجد إشارة»، اضغط على زر SOURCE واختر «TV».",""]]},
+hdmi:{t:"تغيير مصدر التلفاز (HDMI)",d:"لمشاهدة جهاز الاستقبال أو جهاز البث أو جهاز الألعاب…",title:"كيف تغيّر مصدر الصورة في التلفاز (HDMI)",s:[["خذ جهاز التحكم الخاص بالتلفاز (وليس جهاز التحكم الخاص بجهاز الاستقبال).",""],["اضغط على زر المصدر: غالباً اسمه SOURCE أو INPUT، أو عليه رمز مستطيل وسهم.","اسم الزر ومكانه يختلفان حسب نوع التلفاز."],["من القائمة، اختر مدخل HDMI الموصول به الجهاز (HDMI 1 أو HDMI 2…) وأكّد بزر OK.","رقم HDMI مكتوب بجانب المقبس، في الجهة الخلفية من التلفاز أو على جانبه."],["للعودة إلى القنوات العادية، كرّر واختر «TV».",""]]},
+sintonia:{t:"إعادة البحث عن قنوات التلفاز",d:"عندما تختفي القنوات أو تتغير أرقامها",title:"كيف تعيد البحث عن قنوات التلفاز",s:[["اضغط على زر MENU (أو HOME / الإعدادات) في جهاز التحكم.","أسماء القوائم تختلف حسب نوع التلفاز أو جهاز الاستقبال: هذه الخطوات عامة."],["ابحث عن قسم القنوات: غالباً اسمه «القنوات» أو «التثبيت» أو «البث» أو «النظام».",""],["اختر «البحث التلقائي»، وإذا طُلب منك اختر «الهوائي» و«رقمي».",""],["إذا سُئلت عن الترتيب التلقائي للقنوات (LCN)، أجب بنعم وابدأ البحث. انتظر بضع دقائق دون لمس أي شيء.",""],["في النهاية، أجب عن الأسئلة على الشاشة وأكّد.","إذا لم يجد التلفاز أي قناة، تأكد من أن سلك الهوائي موصول جيداً."]]},
+permesso:{t:"التحقق من جاهزية تصريح الإقامة",d:"على موقع Polizia di Stato (الشرطة الإيطالية)",title:"كيف تتحقق من أن تصريح الإقامة (permesso di soggiorno) جاهز",s:[["خذ الإيصال الذي أعطوك إياه في مكتب البريد عندما أرسلت الطلب (kit).","على الإيصال توجد الرموز اللازمة للتحقق."],["افتح موقع Polizia di Stato (poliziadistato.it) على صفحة التحقق من تصريح الإقامة عبر الإنترنت.","الصفحة مشروحة أيضاً بالإنجليزية والفرنسية والإسبانية والأوكرانية."],["اكتب رمز الملف الموجود على الإيصال وأرسل.",""],["اقرأ النتيجة: إذا كان التصريح جاهزاً، ترى اسم المكتب وعنوانه لاستلامه.","لمزيد من المعلومات عن ملفك يوجد أيضاً Portale Immigrazione (portaleimmigrazione.it)."],["اذهب لاستلامه ومعك الوثائق المطلوبة.","التحقق عبر الإنترنت مجاني: احذر من أي شخص يطلب مالاً «لتسريع» ملفك."]]},
+cf:{t:"الحصول على codice fiscale والبطاقة الصحية",d:"للقادمين الجدد إلى إيطاليا",title:"كيف تحصل على codice fiscale (الرقم الضريبي) وtessera sanitaria (البطاقة الصحية)",s:[["تحتاج إلى codice fiscale في كل شيء تقريباً: العمل، السكن، البنك، الطبيب. غالباً يُعطى لك من Sportello Unico per l'Immigrazione أو من Questura عند طلب تصريح الإقامة.",""],["إذا لم يكن لديك، احجز موعداً في مكتب Agenzia delle Entrate وأحضر النموذج AA4/8 معبأً وموقّعاً.","للحصول على أول codice fiscale، يجب على الأجانب الحضور شخصياً."],["أحضر وثيقة سارية: جواز سفر مع تأشيرة (إذا لزم)، أو تصريح الإقامة، أو شهادة هوية من قنصلية بلدك.",""],["يعطونك شهادة فيها codice fiscale: استخدمها حتى تصل البطاقة إلى بيتك.","الرقم الوحيد المعتمد هو الذي تعطيه Agenzia delle Entrate، وليس الأرقام التي تحسبها المواقع أو التطبيقات."],["للحصول على tessera sanitaria وطبيب العائلة، سجّل في الخدمة الصحية الوطنية لدى ASL في منطقتك.","عادةً تحتاج إلى وثيقة هوية وcodice fiscale وتصريح الإقامة (أو إيصال الطلب). اسأل ASL عمّا يجب إحضاره: فذلك يختلف حسب نوع التصريح."]]},
+prenotafacile:{t:"موعد في Questura (Prenotafacile)",d:"لبعض أنواع تصاريح الإقامة",title:"كيف تحجز موعداً في Questura (مكتب الشرطة) عبر Prenotafacile",s:[["افتح الموقع الرسمي prenotafacile.poliziadistato.it.","لا تستخدمه كل مكاتب Questura، وهو مخصص فقط لبعض أنواع التصاريح (مثل الحماية، العلاج الطبي، أفراد عائلات مواطني الاتحاد الأوروبي). لكثير من التصاريح الأخرى يُستخدم ملف (kit) مكتب البريد."],["سجّل ببياناتك وبريد إلكتروني ورقم هاتف صالحين، ثم افتح الرابط الذي يصلك بالبريد.","بعد البريد الإلكتروني لديك حوالي 20 دقيقة لتأكيد رقم هاتفك برمز: جهّز كل شيء مسبقاً."],["ادخل إلى حسابك واختر نوع الملف والمكتب والتاريخ.","يحق لكل شخص موعد واحد فقط لكل نوع من الملفات."],["حمّل إيصال الموعد وأحضره إلى الشباك في اليوم المحدد.","احضر قبل 10 دقائق على الأقل: إذا لم تكن موجوداً عند مناداة رقمك، يُلغى الموعد."],["إذا لم تستطع الذهاب، ألغِ الموعد من الموقع.","احجز فقط من الموقع الرسمي واحذر من أي شخص يطلب مالاً مقابل موعد."]]},
+truffe:{t:"الحماية من الاحتيال",d:"رسائل ومكالمات وروابط مشبوهة",title:"كيف تتعرّف على عملية احتيال",s:[["إذا قالت رسالة SMS إن حسابك موقوف وفيها رابط: لا تضغط عليه.","البنوك والبريد (Poste) لا يرسلون أبداً روابط لإعادة تفعيل الحساب."],["لن يطلب منك أحد من البنك أبداً رمز PIN أو كلمة المرور أو الرموز عبر الهاتف.","إذا طلبوها منك فهي عملية احتيال: أغلق المكالمة."],["إذا كتب لك «ابنك» أو «ابنتك» من رقم جديد يطلب مالاً: توقّف.","اتصل برقمه القديم لتتأكد."],["إذا شككت في شيء، لا تفعل شيئاً واتصل بي.",""]]},
+codici:{t:"حماية SPID والرموز والحساب البنكي",d:"القواعد الذهبية: لا تعطِ رمز OTP أو PIN لأحد",title:"كيف تحمي SPID ورموزك وحسابك البنكي",s:[["كلمات المرور ورموز PIN ورموز OTP (التي تصل عبر SMS أو في التطبيق) ورموز SPID خاصة بك وحدك. لا تخبر بها أحداً.","البنك والبريد (Poste) لا يطلبونها أبداً عبر الهاتف أو SMS أو البريد الإلكتروني."],["إذا وصلك إشعار للموافقة على دخول أو دفع لم تقم به، ارفضه.",""],["لا تضغط على الروابط في الرسائل التي تتحدث عن حساب موقوف أو غرامة أو طرد أو استرداد مال.","افتح أنت التطبيق الرسمي دائماً أو اكتب عنوان الموقع بنفسك."],["إذا استعجلك أحد أو أخافك، توقّف: هذه حيلة المحتالين.","اتصل أنت بالبنك أو بالشخص على رقم تعرفه مسبقاً."],["إذا أعطيت رمزاً بالخطأ، اتصل فوراً ببنكك أو بمزوّد SPID لإيقاف كل شيء.",""]]}
+};
+TR.zh = {
+vuota:{t:"空白指南",d:"从零开始，适用于任何应用或屏幕",title:"",s:[["",""]]},
+"wa-video":{t:"WhatsApp 视频通话",d:"和家人视频聊天",title:"如何在 WhatsApp 上视频通话",s:[["点一下绿色的 WhatsApp 图标。",""],["点一下你想联系的人的名字。",""],["点右上角的摄像机图标。","不要点电话听筒：那是普通语音通话。"],["等对方接听。把手机举在面前。",""],["结束时，点红色按钮。",""]]},
+"wa-foto":{t:"在 WhatsApp 上发照片",d:"选一张照片并发送",title:"如何在 WhatsApp 上发送照片",s:[["打开 WhatsApp，点对方的名字。",""],["在下方点回形针图标（或 +）。",""],["点「图库」（或「照片」）。",""],["点你想发送的照片。",""],["点绿色箭头发送。","如果看不到箭头，请等一秒。"]]},
+foto:{t:"拍照并找到照片",d:"相机和图库",title:"如何拍照并再次找到照片",s:[["点相机图标。",""],["对准画面，点下方白色的大按钮。",""],["要再看照片，点左下角的小方块。","或者打开「图库」/「照片」应用。"]]},
+volume:{t:"调高音量和铃声",d:"这样有人来电时你能听到",title:"如何调高铃声音量",s:[["按手机侧面的音量键：靠上的那个是调高音量。",""],["如果出现音量条，点三个点或齿轮图标。",""],["把「铃声」音量条往上拉。",""]]},
+spid:{t:"用 SPID 登录网站",d:"用身份服务商的应用（例如 PosteID）",title:"如何用 SPID（意大利数字身份）登录网站",s:[["在服务的网站或应用上（例如 INPS、Agenzia delle Entrate 税务局、市政府），点「Entra con SPID」（用 SPID 登录）按钮。",""],["从列表中选择你的 SPID 服务商，也就是给你开通 SPID 的公司（例如 Poste Italiane 意大利邮政）。","每个服务商的界面略有不同：这些步骤只是通用说明。"],["输入用户名和密码，然后确认。",""],["服务商会要求再确认一次：通常是它的应用里的通知、临时验证码或短信。","使用 PosteID 时，可以选择在 PosteID 应用里收通知，或在应用里生成临时 PIN 码。"],["打开服务商的应用，用你的密码、指纹或面容批准登录。","只有在你自己刚刚要求登录时才批准。如果收到不是你发起的请求，请拒绝。"],["回到网站：你已经登录了。用完后请退出登录。",""],["记住：SPID 的密码、PIN 码和验证码只属于你自己。","正规的工作人员不会通过电话、短信或邮件索要。如果有人要，那就是诈骗。"]]},
+cie:{t:"用电子身份证登录",d:"CIE 电子身份证配合 CieID 应用",title:"如何用意大利电子身份证（CIE）登录",s:[["第一次使用：下载官方应用 CieID 并登记你的身份证。需要 8 位数的 PIN 码。","PIN 码的前 4 位是在申请身份证时给你的，后 4 位和身份证一起寄到。"],["应用提示时，把身份证贴在手机背面，保持几秒不动。","手机需要有 NFC 功能。如果读不到卡，请在设置里确认已打开 NFC。"],["在服务的网站上，点「Entra con CIE」（用 CIE 登录）。","安卓手机请使用 Chrome 浏览器。"],["CieID 应用会打开：输入 PIN 码的后 4 位（或用指纹），再把身份证贴到手机上。","如果是在电脑上登录，请按页面提示操作（例如用 CieID 应用扫描二维码）。"],["完成：你已经登录了。","身份证的 PIN 码绝对不要告诉任何人，电话里也不行。"]]},
+io:{t:"IO 应用：消息和证件",d:"查看政府机构的通知，把医疗卡和驾照存进手机",title:"如何使用 IO 应用：消息和证件",s:[["打开 IO 应用，用 SPID 或 CIE 登录（第一次之后，用你设置的解锁码即可）。",""],["在消息里可以看到市政府、INPS、Agenzia delle Entrate 等机构的通知。点一条消息就能阅读。","如果消息里有需要缴费的通知，底部会有「Paga」（付款）按钮。"],["想把证件放进手机，打开 Portafoglio（钱包），选择添加证件。","可以添加 tessera sanitaria（医疗卡）、卡片式驾照和欧洲残疾人卡。身份证不能添加。"],["选择证件，按应用提示确认你的身份。","驾照可能需要几分钟：准备好后会收到通知。"],["小心自称「来自 IO」并带有链接的短信或邮件。","请始终直接打开从官方应用商店下载的 IO 应用。"]]},
+inps:{t:"INPS 养老金明细单",d:"查看金额和扣款",title:"如何查看 INPS 养老金明细单（cedolino）",s:[["打开 inps.it 网站，或打开官方应用 INPS Mobile。",""],["查找「Cedolino pensione」（养老金明细单）服务。","在网站上可以在搜索框里输入这个名字。"],["用 SPID、CIE 或 CNS 登录。",""],["选择月份，打开养老金明细单：可以看到金额和扣款（如有）。","同一个服务还能比较两张养老金明细单，并下载 Certificazione Unica（年度税务证明）。"],["想打印或保存，找下载 PDF 的选项。","小心「来自 INPS」并带链接的短信或邮件：请始终通过官方网站或应用进入。"]]},
+fse:{t:"从 Fascicolo Sanitario 下载检查报告",d:"化验结果、出院小结、处方",title:"如何从电子健康档案（Fascicolo Sanitario）下载检查报告",s:[["打开 fascicolosanitario.gov.it，选择「Accedi al Fascicolo」（进入档案）。","很多大区也有自己的健康档案应用。"],["在地图上点你的大区，也就是你接受医疗服务的地区。","每个大区的界面不同：菜单名称可能会变。"],["用 SPID、CIE 或 tessera sanitaria（CNS）登录。",""],["打开文件和报告栏目，按日期或类型查找检查。",""],["点报告打开，然后选择下载或打印。","有些检查（例如 X 光）的光盘或影像可能需要到医院领取。如果需要缴纳自付费用（ticket），报告可能要付款后才会出现。"]]},
+ricetta:{t:"凭电子处方取药",d:"NRE 编码和医疗卡",title:"如何凭电子处方取药",s:[["医生开电子处方：可能给你一张纸质提示单，或者通过短信、邮件或 Fascicolo Sanitario 发给你处方编码（NRE）。","收到的方式取决于大区和医生：请问你的医生。"],["带上 tessera sanitaria（医疗卡）去药店。",""],["把 NRE 编码给药剂师看（手机上或纸质提示单上）。","药剂师用 NRE 编码和你的 codice fiscale（税号）找到处方。"],["取药，支付自付费用（ticket，如有），并保留收据。","印有你 codice fiscale 的收据可以用来报税抵扣。"]]},
+cup:{t:"在网上预约看病（CUP）",d:"凭医生的处方",title:"如何在网上预约看病或检查（CUP）",s:[["准备好你的 codice fiscale（税号）和带 NRE 编码的医生处方。",""],["打开你所在大区或 ASL（地方卫生局）的 CUP 网站或应用。","每个大区都有自己的系统：搜索「CUP online」加上你所在大区的名字，只使用官方网站。"],["输入 codice fiscale 和处方编号（NRE）。有些大区要求用 SPID 或 CIE 登录。",""],["从提供的日期和地点中选择，然后确认预约。","处方上的优先级字母（U、B、D、P）决定等待时间。有些优先级（例如紧急）不能在网上预约：请打电话或去 CUP 窗口。"],["保存确认信息或截图。如果去不了，请及时取消。","在很多大区，不取消预约的话仍需支付自付费用（ticket）。"]]},
+pagopa:{t:"缴纳 pagoPA 缴费通知",d:"用 IO 应用：二维码或通知编码",title:"如何用 IO 应用缴纳 pagoPA 缴费通知",s:[["拿出 pagoPA 缴费通知（纸质或 PDF）：上面有二维码、Codice Avviso（通知编码）和收费机构的 codice fiscale。","也可以用银行应用、在邮局、烟草店（tabaccheria）以及其他有 pagoPA 标志的地方缴费。"],["打开 IO 应用并登录。",""],["点底部菜单里的「Inquadra」（扫描），对准通知上的二维码。","也可以上传通知，或手动输入 Codice Avviso 和收费机构的 codice fiscale。"],["仔细核对收费机构、事由和金额。","如果通知是以 IO 消息的形式收到的，打开消息，点底部的「Paga」（付款）即可。"],["选择付款方式，如果有提示，再选择由谁处理这笔付款。然后点「Paga」。","手续费可能因处理付款的机构不同而不同。"],["授权付款（例如在银行应用里）。收据会发到 IO。","小心带有「缴纳罚款」链接的短信或邮件：只缴纳真实的通知，通过 IO 或你的银行。"]]},
+bonifico:{t:"用银行应用转账",d:"安全转账，核对 IBAN 和姓名",title:"如何用银行应用转账（bonifico）",s:[["打开你的银行应用，用密码、指纹或面容登录。","每家银行的界面不同：菜单名称可能会变。"],["找到付款栏目，选择转账（bonifico）。",""],["输入收款人姓名和 IBAN（意大利的 IBAN 以 IT 开头，共 27 位），再输入金额和用途。","银行会检查姓名和 IBAN 是否一致，不一致时会提醒你：这时请停下来核实。"],["检查所有信息，用银行的验证码或通知确认。","即时转账几秒钟就到账，而且无法撤回。"],["如果有人催你、吓你让你转账（例如「亲戚」出事了、冒充的工作人员），不要转。","请用你本来就知道的号码，亲自给对方或银行回电。银行绝不会向你索要密码或验证码。"]]},
+"tv-on":{t:"打开电视并找到频道",d:"遥控器和机顶盒",title:"如何打开电视并找到频道",s:[["按遥控器顶部的红色按键。",""],["用数字键输入频道号码。","例如 1 是 Rai 1，5 是 Canale 5。"],["如果屏幕显示「无信号」，按 SOURCE 键并选择「TV」。",""]]},
+hdmi:{t:"切换电视信号源（HDMI）",d:"用来看机顶盒、电视棒、游戏机…",title:"如何切换电视信号源（HDMI）",s:[["拿电视的遥控器（不是机顶盒的遥控器）。",""],["按信号源键：通常叫 SOURCE 或 INPUT，或者是一个带箭头的方框图标。","按键的名称和位置因电视品牌而不同。"],["在列表中选择设备所连接的 HDMI 接口（HDMI 1、HDMI 2…），按 OK 确认。","HDMI 编号写在电视背面或侧面的接口旁边。"],["要回到普通频道，重复操作并选择「TV」。",""]]},
+sintonia:{t:"重新搜索电视频道",d:"频道消失或号码变化时",title:"如何重新搜索电视频道",s:[["按遥控器上的 MENU 键（或 HOME / 设置）。","菜单名称因电视或机顶盒品牌而不同：这些步骤只是通用说明。"],["找到频道相关的选项：通常叫「频道」、「安装」、「广播」或「系统」。",""],["选择「自动搜索」，如果有提示，再选「天线」和「数字」。",""],["如果询问是否自动排序频道（LCN），选「是」并开始搜索。等几分钟，不要碰任何按键。",""],["最后按屏幕上的提示回答并确认。","如果电视找不到任何频道，请检查天线线是否插紧。"]]},
+permesso:{t:"查询居留许可是否办好",d:"在 Polizia di Stato（国家警察）网站上",title:"如何查询居留许可（permesso di soggiorno）是否已办好",s:[["拿出你在邮局寄出申请材料（kit）时拿到的回执。","回执上有查询需要的编码。"],["打开 Polizia di Stato 网站（poliziadistato.it）上在线查询居留许可的页面。","该页面也有英语、法语、西班牙语和乌克兰语说明。"],["输入回执上的申请编码并提交。",""],["查看结果：如果居留许可已办好，会显示领取办公室的名称和地址。","关于申请的更多信息，还可以看 Portale Immigrazione（portaleimmigrazione.it）。"],["带上所需的证件去领取。","在线查询是免费的：小心任何要你付钱来「加快」办理的人。"]]},
+cf:{t:"办理 codice fiscale 和医疗卡",d:"适合刚到意大利的人",title:"如何办理 codice fiscale（税号）和 tessera sanitaria（医疗卡）",s:[["几乎所有事情都需要 codice fiscale（税号）：工作、租房、银行、看医生。申请居留许可时，移民窗口（Sportello Unico per l'Immigrazione）或 Questura（警察局）往往已经给你分配了。",""],["如果你还没有，请在 Agenzia delle Entrate（税务局）办公室预约，并带上填好并签名的 AA4/8 表格。","外国人第一次办理税号必须本人到场。"],["带上有效证件：护照及签证（如需要）、居留许可，或你所在国领事馆出具的身份证明。",""],["他们会给你一份写有税号的证明：在卡片寄到家之前就用它。","只有 Agenzia delle Entrate 发放的税号才有效，网站或应用计算出来的不算。"],["要办 tessera sanitaria 和选家庭医生，请到你所在地区的 ASL（地方卫生局）登记加入国家医疗服务。","通常需要身份证件、codice fiscale 和居留许可（或申请回执）。请问 ASL 需要带什么：这取决于居留许可的类型。"]]},
+prenotafacile:{t:"在 Questura 预约（Prenotafacile）",d:"适用于部分居留许可类型",title:"如何通过 Prenotafacile 在 Questura（警察局）预约",s:[["打开官方网站 prenotafacile.poliziadistato.it。","不是所有 Questura 都使用它，而且只适用于部分许可类型（例如保护、医疗、欧盟公民的家属）。很多其他许可要通过邮局的材料包（kit）办理。"],["用你的个人信息、有效的邮箱和电话号码注册，然后打开邮件里收到的链接。","收到邮件后，你大约有 20 分钟时间用验证码确认电话号码：请提前准备好一切。"],["登录账户，选择办理类型、办公室和日期。","每人每种办理类型只能有一个预约。"],["下载预约回执，在约定当天带到窗口。","至少提前 10 分钟到：如果叫到你的号码时你不在，预约就会被取消。"],["如果去不了，请在网站上取消预约。","只在官方网站预约，小心任何为预约向你要钱的人。"]]},
+truffe:{t:"防范诈骗",d:"可疑的短信、电话和链接",title:"如何识别诈骗",s:[["如果短信说你的账户被冻结并附有链接：不要点。","银行和邮局（Poste）从不发送解冻账户的链接。"],["银行的人绝不会在电话里向你索要 PIN 码、密码或验证码。","如果有人要，那就是诈骗：请挂断电话。"],["如果「儿子」或「女儿」用新号码发消息向你要钱：先停下来。","打对方原来的号码核实一下。"],["有疑问时，什么都不要做，给我打电话。",""]]},
+codici:{t:"保护 SPID、验证码和银行账户",d:"黄金法则：OTP 验证码和 PIN 码绝不告诉任何人",title:"如何保护 SPID、验证码和你的账户",s:[["密码、PIN 码、OTP 验证码（通过短信或应用收到的）和 SPID 验证码只属于你自己。不要告诉任何人。","银行和邮局（Poste）从不通过电话、短信或邮件索要。"],["如果收到批准登录或付款的通知，而那不是你本人操作的，请拒绝。",""],["不要点短信或邮件里关于账户冻结、罚款、包裹或退款的链接。","请始终自己打开官方应用，或自己输入网站地址。"],["如果有人催你或吓你，先停下来：这是骗子的惯用伎俩。","请用你本来就知道的号码，亲自给银行或对方回电。"],["如果不小心给出了验证码，请立即打电话给你的银行或 SPID 服务商，冻结账户。",""]]}
+};
+
+for (const L in TR) for (const t of TEMPLATES) t[L] = TR[L][t.id];
+/* Lingue della guida (l'interfaccia dell'app resta in italiano) */
+const LANGS = [
+  { id: 'it', code: 'IT', name: 'Italiano', it: 'Italiano' },
+  { id: 'en', code: 'EN', name: 'English', it: 'Inglese' },
+  { id: 'fr', code: 'FR', name: 'Français', it: 'Francese' },
+  { id: 'ar', code: 'AR', name: 'العربية', it: 'Arabo', rtl: true },
+  { id: 'zh', code: 'ZH', name: '中文', it: 'Cinese' }
+];
+const langOf = l => LANGS.find(x => x.id === l) || LANGS[0];
+const isRtl = l => !!langOf(l).rtl;
+const PICK = {
+  it: { all: 'Tutti', empty: 'Nessun modello trovato. Prova un\'altra parola o parti da una guida vuota.', ph: '🔎 Cerca: SPID, ricetta, HDMI, permesso…' },
+  en: { all: 'All', empty: 'No template found. Try another word or start from a blank guide.', ph: '🔎 Search: SPID, prescription, HDMI, permit…' },
+  fr: { all: 'Tous', empty: 'Aucun modèle trouvé. Essayez un autre mot ou partez d\'un guide vierge.', ph: '🔎 Rechercher : SPID, ordonnance, HDMI, permis…' },
+  ar: { all: 'الكل', empty: 'لم يتم العثور على أي نموذج. جرّب كلمة أخرى أو ابدأ بدليل فارغ.', ph: '🔎 ابحث: SPID، وصفة، HDMI، تصريح…' },
+  zh: { all: '全部', empty: '没有找到模板。换个词试试，或从空白指南开始。', ph: '🔎 搜索：SPID、处方、HDMI、居留…' }
+};
+
+/* ---------------- Stato ---------------- */
+let guides = [];
+let cur = null;           // guida in modifica
+let pendingImgStep = null;
+let saveT = null;
+
+async function load() {
+  guides = await DB.all();
+  if (!guides.length && !localStorage.getItem('spiegamelo_seeded')) {
+    const d = demoGuide(); await DB.put(d); guides = [d];
+    localStorage.setItem('spiegamelo_seeded', '1');
+  }
+  guides.sort((a, b) => b.updated - a.updated);
+  renderHome();
+}
+
+/* ---------------- HOME ---------------- */
+function renderHome() {
+  const el = $('#guideList');
+  if (!guides.length) { el.innerHTML = '<div class="empty">Ancora nessuna guida.<br>Premi <b>＋ Nuova guida</b> per iniziare.</div>'; return; }
+  el.innerHTML = guides.map((g, gi) => {
+    const first = g.steps.find(s => s.img);
+    const n = g.steps.length;
+    return `<div class="gcard" data-id="${g.id}" style="--d:${Math.min(gi, 6) * 60}ms">
+      <div class="gtop"><div class="thumb" style="${first ? `background-image:url('${first.img.replace(/'/g, '%27')}')` : ''}">${first ? '' : '📄'}</div>
+      <div style="flex:1;min-width:0"><h4 dir="auto">${esc(g.title || 'Guida senza titolo')}</h4>
+      <div class="meta">${n} pass${n === 1 ? 'o' : 'i'}${g.forWhom ? ' · per ' + esc(g.forWhom) : ''}${g.device ? ' · ' + esc(g.device) : ''}${glang(g) !== 'it' ? ' · ' + langOf(glang(g)).code + ' ' + langOf(glang(g)).name : ''}</div>
+      ${g.demo ? '<div class="meta" style="color:var(--pri)">Esempio: provala!</div>' : ''}</div></div>
+      <div class="acts">
+        <button data-act="play"><span aria-hidden="true">▶️</span>Prova</button>
+        <button data-act="edit"><span aria-hidden="true">✏️</span>Modifica</button>
+        <button data-act="share"><span aria-hidden="true">📤</span>Invia</button>
+        <button data-act="print"><span aria-hidden="true">🖨️</span>Stampa</button>
+      </div></div>`;
+  }).join('');
+}
+$('#guideList').addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const g = guides.find(x => x.id === b.closest('.gcard').dataset.id); if (!g) return;
+  ({ play: () => play(g), edit: () => openEditor(g), share: () => shareGuide(g), print: () => printGuide(g) })[b.dataset.act]();
+});
+
+function showHome() { $('#home').classList.remove('hide'); $('#editor').classList.add('hide'); $('#fab').classList.remove('hide'); cur = null; guides.sort((a, b) => b.updated - a.updated); renderHome(); window.scrollTo(0, 0); }
+
+/* ---------------- Modelli ---------------- */
+let tplLang = 'it', tplCat = 'all';
+const norm = x => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+function renderCats() {
+  const L = tplLang;
+  $('#tplLangs').innerHTML = LANGS.map(l => `<button type="button" data-lang="${l.id}" class="${l.id === L ? 'on' : ''}" aria-pressed="${l.id === L}" title="${l.it}"><i>${l.code}</i><span lang="${l.id}" dir="${l.rtl ? 'rtl' : 'ltr'}">${l.name}</span></button>`).join('');
+  $('#tplCats').innerHTML = [`<button class="chip ${tplCat === 'all' ? 'on' : ''}" aria-pressed="${tplCat === 'all'}" data-cat="all">${PICK[L].all}</button>`]
+    .concat(CATS.map(c => `<button class="chip ${tplCat === c.id ? 'on' : ''}" aria-pressed="${tplCat === c.id}" data-cat="${c.id}">${c.e} ${esc(c[L])}</button>`)).join('');
+}
+function tplBtn(t) {
+  const x = t[tplLang];
+  return `<button class="tpl" data-id="${t.id}"><span class="e">${t.e}</span><span lang="${tplLang}" dir="${isRtl(tplLang) ? 'rtl' : 'ltr'}" style="flex:1"><b>${esc(x.t)}</b><small>${esc(x.d)}</small></span></button>`;
+}
+function renderTpl() {
+  renderCats();
+  $('#tplSearch').placeholder = PICK[tplLang].ph; $('#tplSearch').dir = isRtl(tplLang) ? 'rtl' : 'auto';
+  const q = norm($('#tplSearch').value.trim());
+  const match = t => !q || q.split(/\s+/).every(w => norm([t[tplLang].t, t[tplLang].d, t[tplLang].title, t.it.t, t.it.d, t.en.t, t.k].join(' ')).includes(w));
+  const list = TEMPLATES.filter(t => t.cat && match(t) && (tplCat === 'all' || q || t.cat === tplCat));
+  const blank = TEMPLATES.find(t => t.id === 'vuota');
+  let html = (!q ? tplBtn(blank) : '');
+  CATS.forEach(c => {
+    const items = list.filter(t => t.cat === c.id); if (!items.length) return;
+    html += `<div class="tgh">${c.e} ${esc(c[tplLang])}</div>` + items.map(tplBtn).join('');
+  });
+  if (!list.length) html += `<div class="empty" dir="${isRtl(tplLang) ? 'rtl' : 'ltr'}">${PICK[tplLang].empty}</div>` + (q ? tplBtn(blank) : '');
+  $('#tplList').innerHTML = html;
+}
+function openTpl() { $('#tplSearch').value = ''; tplCat = 'all'; renderTpl(); openModal($('#tplModal')); }
+/* Finestre: focus, tasto Esc, blocco scorrimento */
+let lastFocus = null;
+function openModal(m) {
+  lastFocus = document.activeElement; m.classList.add('on'); document.body.classList.add('lock');
+  setTimeout(() => { const h = m.querySelector('h2'); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); } }, 40);
+}
+function closeModal(m, noRestore) {
+  m.classList.remove('on'); if (!document.querySelector('.modal.on, .player.on')) document.body.classList.remove('lock');
+  if (!noRestore && lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+}
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const m = document.querySelector('.modal.on'); if (m) return closeModal(m);
+  if ($('#player').classList.contains('on')) closePlayer();
+});
+/* Info e contatti */
+function contactLinks() {
+  const w = String(CONTACT.whatsapp || '').replace(/\s+/g, ''); let wa = '';
+  if (/^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//i.test(w)) wa = w;
+  else if (w) { let d = w.replace(/\D/g, ''); if (d.startsWith('00')) d = d.slice(2); if (d.length === 10 && d[0] === '3') d = '39' + d; if (d.length >= 8) wa = 'https://wa.me/' + d; }
+  const em = String(CONTACT.email || '').trim();
+  const mail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? 'mailto:' + em + '?subject=' + encodeURIComponent('Spiegamelo') : '';
+  return { wa, mail, em };
+}
+function openInfo() {
+  const name = String(CONTACT.name || 'Alessio').trim() || 'Alessio';
+  $('#infoName').textContent = name; $('#infoAv').textContent = name[0].toUpperCase();
+  const c = contactLinks();
+  $('#ctWa').classList.toggle('hide', !c.wa); if (c.wa) $('#ctWa').href = c.wa;
+  $('#ctMail').classList.toggle('hide', !c.mail); if (c.mail) $('#ctMail').href = c.mail;
+  $('#ctMailTxt').classList.toggle('hide', !c.mail); $('#ctMailTxt').textContent = c.mail ? 'Email: ' + c.em : '';
+  $('#infoContact').classList.toggle('hide', !c.wa && !c.mail);
+  openModal($('#infoModal'));
+}
+$('#btnInfo').onclick = openInfo; $('#btnInfo2').onclick = openInfo;
+$('#infoModal').addEventListener('click', e => { if (e.target === e.currentTarget || e.target.closest('[data-close]')) closeModal($('#infoModal')); });
+/* Musica di sottofondo (spenta all'inizio, la scelta viene ricordata) */
+const music = SpMusic();
+function musicUi() { const on = music.on; $('#btnMusic').setAttribute('aria-pressed', on); $('#btnMusic').querySelector('b').textContent = on ? 'accesa' : 'spenta'; }
+(function () { let on = false; try { on = localStorage.getItem('sp_music') === '1'; } catch (e) {} music.set(on); musicUi(); })();
+$('#btnMusic').onclick = () => { const on = !music.on; music.set(on); try { localStorage.setItem('sp_music', on ? '1' : '0'); } catch (e) {} musicUi(); toast(on ? '🎵 Musica accesa (volume basso)' : 'Musica spenta'); };
+$('#btnNew').onclick = openTpl; $('#fab').onclick = openTpl;
+$('#tplSearch').addEventListener('input', renderTpl);
+$('#tplModal').addEventListener('click', async e => {
+  if (e.target === e.currentTarget || e.target.closest('[data-close]')) return closeModal($('#tplModal'));
+  const lb = e.target.closest('[data-lang]');
+  if (lb) { tplLang = lb.dataset.lang; renderTpl(); return; }
+  const cb = e.target.closest('[data-cat]');
+  if (cb) { tplCat = cb.dataset.cat; $('#tplSearch').value = ''; renderTpl(); return; }
+  const b = e.target.closest('.tpl'); if (!b) return;
+  const t = TEMPLATES.find(x => x.id === b.dataset.id); const x = t[tplLang];
+  const g = { id: uid(), title: x.title, lang: tplLang, tpl: t.id, forWhom: '', device: '', helper: '', phone: '', created: Date.now(), updated: Date.now(), steps: x.s.map(s => newStep(s[0], s[1])) };
+  await DB.put(g); guides.unshift(g);
+  closeModal($('#tplModal'), true);
+  openEditor(g); toast('Guida creata: ora aggiungi gli screenshot 📸');
+});
+
+/* ---------------- EDITOR ---------------- */
+function openEditor(g) {
+  cur = g;
+  $('#home').classList.add('hide'); $('#editor').classList.remove('hide'); $('#fab').classList.add('hide');
+  $('#fTitle').value = g.title || ''; $('#fFor').value = g.forWhom || ''; $('#fDevice').value = g.device || ''; $('#fLang').value = g.lang || 'it';
+  $('#fHelper').value = g.helper || ''; $('#fPhone').value = g.phone || '';
+  $('#savedLbl').textContent = '';
+  applyDir(); renderSteps(); window.scrollTo(0, 0);
+}
+function applyDir() { const d = isRtl(glang(cur)) ? 'rtl' : 'auto'; $('#fTitle').dir = d; $('#fTitle').lang = glang(cur); }
+function renderSteps() {
+  const sdir = isRtl(glang(cur)) ? 'rtl' : 'auto';
+  const n = cur.steps.length;
+  $('#steps').innerHTML = cur.steps.map((s, i) => `
+    <div class="card step" data-sid="${s.id}">
+      <div class="shead"><div class="num">${i + 1}</div><div class="grow">Passo ${i + 1}</div>
+        <button class="ic" data-a="up" ${i === 0 ? 'disabled' : ''} aria-label="Sposta su">↑</button>
+        <button class="ic" data-a="down" ${i === n - 1 ? 'disabled' : ''} aria-label="Sposta giù">↓</button>
+        <button class="ic" data-a="del" aria-label="Elimina passo">🗑</button></div>
+      <div class="imgbox ${s.img ? 'has' : ''}" data-a="${s.img ? 'mark' : 'img'}" ${s.img ? '' : `role="button" tabindex="0" aria-label="Aggiungi screenshot al passo ${i + 1}"`}>
+        ${s.img ? `<div class="stage"><img src="${s.img}" alt="Schermata passo ${i + 1}">${s.marker ? `<div class="mark" style="left:${s.marker.x}%;top:${s.marker.y}%"></div>` : ''}</div>`
+                : `<div class="add"><span style="font-size:2rem">📸</span><b>Aggiungi screenshot o foto</b><span>Fai lo screenshot sul tuo telefono e caricalo qui</span></div>`}
+      </div>
+      ${s.img ? `<div class="hint">👆 Tocca la foto nel punto dove bisogna premere: comparirà il cerchio rosso.</div>
+      <div class="tools"><button class="btn sm" data-a="img">🔄 Cambia foto</button>${s.marker ? '<button class="btn sm ghost" data-a="unmark">Togli cerchio</button>' : ''}<button class="btn sm ghost" data-a="rmimg">Togli foto</button></div>` : ''}
+      <div class="field"><label for="tx-${s.id}">Cosa deve fare <small>(frase breve e semplice)</small></label>
+        <textarea class="inp" id="tx-${s.id}" data-f="text" dir="${sdir}" lang="${glang(cur)}" placeholder="Es. Tocca l'icona verde">${esc(s.text)}</textarea></div>
+      <div class="field" style="margin-bottom:0"><label for="nt-${s.id}">⚠️ Attenzione <small>(facoltativo)</small></label>
+        <input class="inp" id="nt-${s.id}" data-f="note" dir="${sdir}" lang="${glang(cur)}" placeholder="Es. Non toccare la cornetta" value="${esc(s.note)}"></div>
+    </div>`).join('') || '<div class="empty">Nessun passo. Aggiungine uno qui sotto.</div>';
+}
+function touch() {
+  if (!cur) return;
+  cur.updated = Date.now(); delete cur.demo;
+  $('#savedLbl').textContent = 'Salvataggio…';
+  clearTimeout(saveT);
+  saveT = setTimeout(async () => {
+    try { await DB.put(cur); $('#savedLbl').textContent = 'Salvato ✓'; }
+    catch (e) { $('#savedLbl').textContent = '⚠️ Memoria piena'; toast('Memoria piena: togli qualche foto o elimina guide vecchie.'); }
+  }, 350);
+}
+[['fTitle', 'title'], ['fFor', 'forWhom'], ['fDevice', 'device'], ['fLang', 'lang'], ['fHelper', 'helper'], ['fPhone', 'phone']].forEach(([id, k]) => {
+  $('#' + id).addEventListener(id === 'fLang' || id === 'fDevice' ? 'change' : 'input', e => { cur[k] = e.target.value; touch(); if (id === 'fLang') { applyDir(); renderSteps(); } });
+});
+$('#steps').addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.imgbox[role="button"]')) { e.preventDefault(); e.target.click(); } });
+$('#steps').addEventListener('input', e => {
+  const f = e.target.dataset.f; if (!f) return;
+  const s = cur.steps.find(x => x.id === e.target.closest('.step').dataset.sid); s[f] = e.target.value; touch();
+});
+$('#steps').addEventListener('click', e => {
+  const a = e.target.closest('[data-a]'); if (!a) return;
+  const card = a.closest('.step'); const idx = cur.steps.findIndex(x => x.id === card.dataset.sid); const s = cur.steps[idx];
+  switch (a.dataset.a) {
+    case 'up': [cur.steps[idx - 1], cur.steps[idx]] = [cur.steps[idx], cur.steps[idx - 1]]; break;
+    case 'down': [cur.steps[idx + 1], cur.steps[idx]] = [cur.steps[idx], cur.steps[idx + 1]]; break;
+    case 'del': if (!confirm('Eliminare il passo ' + (idx + 1) + '?')) return; cur.steps.splice(idx, 1); break;
+    case 'img': pendingImgStep = s.id; $('#imgFile').value = ''; $('#imgFile').click(); return;
+    case 'rmimg': s.img = null; s.marker = null; break;
+    case 'unmark': s.marker = null; break;
+    case 'mark': {
+      const img = card.querySelector('.stage img'); if (!img) return;
+      const r = img.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+      s.marker = { x: +((e.clientX - r.left) / r.width * 100).toFixed(1), y: +((e.clientY - r.top) / r.height * 100).toFixed(1) };
+      break;
+    }
+    default: return;
+  }
+  touch(); renderSteps();
+});
+$('#btnAddStep').onclick = () => { cur.steps.push(newStep()); touch(); renderSteps(); setTimeout(() => { const c = $('#steps').lastElementChild; c && c.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' }); }, 30); };
+$('#btnBack').onclick = showHome;
+$('#btnPlay').onclick = () => play(cur);
+$('#btnShare2').onclick = () => shareGuide(cur);
+$('#btnPrint2').onclick = () => printGuide(cur);
+$('#btnDelete').onclick = async () => {
+  if (!confirm('Eliminare definitivamente questa guida?')) return;
+  await DB.del(cur.id); guides = guides.filter(g => g.id !== cur.id); showHome(); toast('Guida eliminata');
+};
+
+/* Immagini: ridimensiona e comprime per non riempire la memoria */
+function processImage(file) {
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onerror = rej;
+    fr.onload = () => {
+      const img = new Image();
+      img.onerror = rej;
+      img.onload = () => {
+        const MAX = 1100; let { width: w, height: h } = img;
+        const k = Math.min(1, MAX / Math.max(w, h)); w = Math.round(w * k); h = Math.round(h * k);
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        res(c.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+$('#imgFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f || !cur) return;
+  const s = cur.steps.find(x => x.id === pendingImgStep); if (!s) return;
+  try { s.img = await processImage(f); s.marker = null; touch(); renderSteps(); toast('Ora tocca la foto dove bisogna premere 👆'); }
+  catch (err) { toast('Non riesco a leggere questa immagine'); }
+});
+
+/* ---------------- VISUALIZZATORE (stesso file per anteprima ed export) ---------------- */
+const VSTR = {
+  it: { guide: 'Guida', forw: 'Per ', steps: '{n} passi semplici. Vai con calma: puoi sempre tornare indietro.', start: 'Inizia ▶', stepof: 'Passo {i} di {n}', back: '◀ Indietro', next: 'Avanti ▶', done: 'Ho finito ✓', read: '🔊 Leggimelo', bravo: 'Fatto! Ottimo lavoro!', again: '↺ Ricomincia', fail: 'Qualcosa non ha funzionato? Nessun problema:', call: '📞 Chiama ', callhelp: '📞 Chiama per aiuto', last: '◀ Torna all\'ultimo passo', smaller: 'Testo più piccolo', bigger: 'Testo più grande', img: 'Schermata', voice: 'it-IT', music: 'Musica di sottofondo', prog: 'Avanzamento', ifnotn: 'Se non ci riesci chiama questo numero: ', ifnot: 'Se non ci riesci chiama ', share: g => `Ti ho preparato una guida: «${g.title || 'Guida'}». Aprila e segui i passi, uno alla volta 🙂` },
+  en: { guide: 'Guide', forw: 'For ', steps: '{n} simple steps. Take your time: you can always go back.', start: 'Start ▶', stepof: 'Step {i} of {n}', back: '◀ Back', next: 'Next ▶', done: 'I\'m done ✓', read: '🔊 Read it to me', bravo: 'Done! Well done!', again: '↺ Start again', fail: 'Didn\'t work? No problem:', call: '📞 Call ', callhelp: '📞 Call for help', last: '◀ Back to the last step', smaller: 'Smaller text', bigger: 'Bigger text', img: 'Screenshot', voice: 'en-GB', music: 'Background music', prog: 'Progress', ifnotn: 'If you can\'t do it, call this number: ', ifnot: 'If you can\'t do it, call ', share: g => `I made you a guide: “${g.title || 'Guide'}”. Open it and follow the steps, one at a time 🙂` },
+  fr: { guide: 'Guide', forw: 'Pour ', steps: '{n} étapes simples. Prenez votre temps : vous pouvez toujours revenir en arrière.', start: 'Commencer ▶', stepof: 'Étape {i} sur {n}', back: '◀ Retour', next: 'Suivant ▶', done: 'J\'ai fini ✓', read: '🔊 Écouter', bravo: 'Terminé ! Bravo !', again: '↺ Recommencer', fail: 'Ça n\'a pas marché ? Pas de souci :', call: '📞 Appeler ', callhelp: '📞 Appeler à l\'aide', last: '◀ Revenir à la dernière étape', smaller: 'Texte plus petit', bigger: 'Texte plus grand', img: 'Capture d\'écran', voice: 'fr-FR', music: 'Musique de fond', prog: 'Progression', ifnotn: 'Si vous n\'y arrivez pas, appelez ce numéro : ', ifnot: 'Si vous n\'y arrivez pas, appelez ', share: g => `Je t'ai préparé un guide : « ${g.title || 'Guide'} ». Ouvre-le et suis les étapes, une à la fois 🙂` },
+  ar: { guide: 'دليل', forw: 'مُعَدّ لـ: ', steps: 'عدد الخطوات: {n}. خذ وقتك، يمكنك الرجوع دائماً.', start: 'ابدأ ◀', stepof: 'الخطوة {i} من {n}', back: '▶ السابق', next: 'التالي ◀', done: 'انتهيت ✓', read: '🔊 اقرأها لي', bravo: 'أحسنت! لقد انتهيت!', again: '↺ ابدأ من جديد', fail: 'لم تنجح؟ لا مشكلة:', call: '📞 اتصل بـ ', callhelp: '📞 اتصل للمساعدة', last: '▶ العودة إلى الخطوة الأخيرة', smaller: 'نص أصغر', bigger: 'نص أكبر', img: 'لقطة شاشة', voice: 'ar-SA', music: 'موسيقى هادئة', prog: 'التقدّم', ifnotn: 'إذا لم تنجح، اتصل بهذا الرقم: ', ifnot: 'إذا لم تنجح، اتصل بـ ', share: g => `أعددت لك دليلاً: «${g.title || 'دليل'}». افتحه واتبع الخطوات واحدة تلو الأخرى 🙂` },
+  zh: { guide: '指南', forw: '给：', steps: '共 {n} 个简单步骤。慢慢来，随时可以返回上一步。', start: '开始 ▶', stepof: '第 {i} 步，共 {n} 步', back: '◀ 上一步', next: '下一步 ▶', done: '我做完了 ✓', read: '🔊 读给我听', bravo: '完成了！真棒！', again: '↺ 重新开始', fail: '没成功？没关系：', call: '📞 打电话给 ', callhelp: '📞 打电话求助', last: '◀ 回到最后一步', smaller: '缩小文字', bigger: '放大文字', img: '截图', voice: 'zh-CN', music: '背景音乐', prog: '进度', ifnotn: '如果做不到，请拨打这个号码：', ifnot: '如果做不到，请打电话给 ', share: g => `我给你做了一个指南：「${g.title || '指南'}」。打开它，一步一步跟着做 🙂` }
+};
+const glang = g => (VSTR[g.lang] ? g.lang : 'it');
+const vs = g => VSTR[glang(g)];
+const stepOf = (L, i, n) => L.stepof.replace('{i}', i).replace('{n}', n);
+const helpLine = (L, g) => (g.helper ? L.ifnot + g.helper + ': ' : L.ifnotn) + g.phone;
+const FONT = 'system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Sans Arabic","Noto Naskh Arabic","Geeza Pro","Noto Sans CJK SC","Noto Serif CJK SC","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+function viewerHtml(g) {
+  const L = vs(g); const lang = glang(g); const dir = isRtl(lang) ? 'rtl' : 'ltr';
+  const Lj = Object.fromEntries(Object.entries(L).filter(([k, v]) => typeof v === 'string'));
+  const data = { v: 3, app: 'spiegamelo', lang, dir, L: Lj, title: g.title, forWhom: g.forWhom, device: g.device, helper: g.helper, phone: g.phone,
+    steps: g.steps.filter(s => s.text || s.img).map(s => ({ text: s.text, note: s.note, img: s.img, marker: s.marker })) };
+  const json = JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  return `<!DOCTYPE html><html lang="${lang}" dir="${dir}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>${esc(g.title || L.guide)}</title><meta name="generator" content="Spiegamelo"><meta name="theme-color" content="#0f766e">
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:${FONT};background:#fffdf7;color:#111;display:flex;flex-direction:column;font-size:var(--fs,24px);-webkit-text-size-adjust:100%}
+.top{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#0f766e;color:#fff;font-size:min(.75em,22px);font-weight:700}
+.top .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top button{background:#ffffff26;color:#fff;border:0;border-radius:10px;font-size:1em;font-weight:800;padding:8px 10px;min-width:48px;min-height:48px;flex:none}
+.top #mu{opacity:.8;display:inline-flex;align-items:center;justify-content:center}.top #mu[aria-pressed="true"]{background:#fff;color:#0f766e;opacity:1}
+button:focus-visible,a:focus-visible{outline:4px solid #f59f00;outline-offset:2px}
+.bar{height:10px;background:#d8ece9}.bar i{display:block;height:100%;background:#f59f00;transition:width .3s}
+main{flex:1;overflow:auto;padding:14px 16px 8px;display:flex;flex-direction:column;align-items:center}
+main>*{flex-shrink:0}
+.cnt{font-size:.8em;color:#0f766e;font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.stage{direction:ltr;position:relative;display:inline-block;line-height:0;max-width:100%;border-radius:14px;overflow:hidden;box-shadow:0 4px 18px #0003;margin-bottom:12px}
+.stage img{max-width:100%;max-height:48vh;display:block}
+.mark{position:absolute;width:max(40px,15%);aspect-ratio:1;transform:translate(-50%,-50%);border:6px solid #e03131;border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 16px #000a;animation:p 1.2s ease-in-out infinite}
+.mark::after{content:"";position:absolute;inset:30%;background:#e03131;border-radius:50%;opacity:.6}
+@keyframes p{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.18)}}
+.txt{font-size:1.1em;font-weight:700;line-height:1.3;text-align:center;max-width:680px;margin:4px 0 10px;overflow-wrap:break-word;hyphens:auto}
+.note{background:#fff3bf;border:3px solid #f59f00;border-radius:14px;padding:12px 14px;font-size:.85em;font-weight:600;max-width:680px;width:100%;overflow-wrap:break-word;hyphens:auto}
+.nav{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;padding:12px 14px calc(14px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #eee}
+.nav button,.big{border:0;border-radius:18px;font-size:min(1em,8vw);font-weight:800;min-height:72px;padding:10px;min-width:0;overflow-wrap:break-word}
+.prev{background:#e9ecef;color:#222}.next{background:#0f766e;color:#fff}.prev:disabled{opacity:.35}
+.speak{background:#fff;border:3px solid #0f766e!important;color:#0f766e;min-height:56px!important;margin-top:12px;padding:8px 18px!important;font-size:.8em!important}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;max-width:640px}
+.center h1{font-size:1.5em;margin:0;line-height:1.2}.center p{margin:0;color:#444}
+.big{width:100%;max-width:520px;background:#0f766e;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;line-height:1.2}
+.big.call{background:#237a36}.big.alt{background:#e9ecef;color:#222}
+.emoji{font-size:3.2em;line-height:1}
+#m>*{animation:sIn .38s ease-out both}
+@keyframes sIn{from{opacity:0;transform:translateX(var(--dx,0px))}to{opacity:1;transform:none}}
+.stage>img{animation:none}
+.cf{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.cf i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;opacity:.9;animation:fall var(--t,2s) ease-in var(--dl,0s) forwards}
+@keyframes fall{0%{transform:translateY(0) rotate(0)}85%{opacity:.9}100%{transform:translateY(105vh) rotate(var(--r,540deg));opacity:0}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.cf{display:none}}
+</style></head><body>
+<div class="top"><span class="t" id="tt"></span><button id="mu" aria-pressed="false" aria-label="${L.music}" title="${L.music}"><svg class="note-ic" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><path d="M8 17.5V6l11-2.5v11.5" stroke="currentColor" stroke-width="2.2" fill="none"/><circle cx="5.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15" r="2.8" fill="currentColor"/></svg></button><button id="am" aria-label="${L.smaller}" title="${L.smaller}">A−</button><button id="ap" aria-label="${L.bigger}" title="${L.bigger}">A+</button></div>
+<div class="bar" id="pbw" role="progressbar" aria-label="${L.prog}" aria-valuemin="0" aria-valuemax="${data.steps.length}" aria-valuenow="0"><i id="pb" style="width:0"></i></div>
+<main id="m" aria-live="polite"></main>
+<div class="nav" id="nav"><button class="prev" id="pv">${L.back}</button><button class="next" id="nx">${L.next}</button></div>
+<noscript><style>.top button,.bar,.nav,#m{display:none!important}.ns{padding:16px}.ns .st{margin:0 0 22px;padding-bottom:18px;border-bottom:3px solid #eee}.ns .stage{display:block;margin:8px auto}</style><div class="ns">${data.steps.map((s, i) => `<div class="st"><div class="cnt">${esc(stepOf(L, i + 1, data.steps.length))}</div>${s.img ? `<div class="stage"><img src="${s.img}" alt="">${s.marker ? `<div class="mark" style="left:${s.marker.x}%;top:${s.marker.y}%;animation:none"></div>` : ''}</div>` : ''}<div class="txt">${esc(s.text)}</div>${s.note ? `<div class="note">⚠️ ${esc(s.note)}</div>` : ''}</div>`).join('')}${g.phone ? `<p class="txt">${esc(helpLine(L, g))}</p>` : ''}</div></noscript>
+<script type="application/json" id="guida-dati">${json}<\/script>
+<script>
+${SpMusic.toString()}
+(function(){
+var G=JSON.parse(document.getElementById('guida-dati').textContent);var S=G.steps;var i=-1;var L=G.L||{};var rtl=G.dir==='rtl';function SO(a,b){return L.stepof.replace('{i}',a).replace('{n}',b)}
+var m=document.getElementById('m'),nav=document.getElementById('nav'),pb=document.getElementById('pb');
+document.getElementById('tt').textContent=G.title||L.guide;
+var fs=parseInt(localStorage.getItem('sp_fs')||'24',10)||24;function setFs(v){fs=Math.max(18,Math.min(40,v));document.body.style.setProperty('--fs',fs+'px');try{localStorage.setItem('sp_fs',fs)}catch(e){}}setFs(fs);
+document.getElementById('ap').onclick=function(){setFs(fs+3)};document.getElementById('am').onclick=function(){setFs(fs-3)};
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches),dirn=0;
+var MU=SpMusic(),mub=document.getElementById('mu');function muUi(){mub.setAttribute('aria-pressed',MU.on?'true':'false')}
+try{MU.set(localStorage.getItem('sp_music')==='1')}catch(e){}muUi();
+mub.onclick=function(){MU.set(!MU.on);try{localStorage.setItem('sp_music',MU.on?'1':'0')}catch(e){}muUi()};
+window.__spMusic=MU;
+function confetti(){if(RM)return;var c=el('div','cf'),cols=['#e03131','#f59f00','#0f766e','#1c7ed6','#ae3ec9','#40c057'];for(var k=0;k<36;k++){var p=el('i');p.style.left=(Math.random()*100)+'%';p.style.background=cols[k%cols.length];p.style.setProperty('--t',(1.6+Math.random()*1.2)+'s');p.style.setProperty('--dl',(Math.random()*.5)+'s');p.style.setProperty('--r',(Math.random()*720-360)+'deg');if(k%3===0){p.style.width='8px';p.style.height='8px';p.style.borderRadius='50%'}c.appendChild(p)}document.body.appendChild(c);setTimeout(function(){c.remove()},3600)}
+function say(t){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang=L.voice||'it-IT';u.rate=.9;MU.duck(true);u.onend=u.onerror=function(){MU.duck(false)};var pre=(L.voice||'it').slice(0,2);var v=speechSynthesis.getVoices().filter(function(v){return v.lang.toLowerCase().indexOf(pre)===0})[0];if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+var canSpeak='speechSynthesis' in window;
+function callBtn(){if(!G.phone)return null;var a=el('a','big call',G.helper?L.call+G.helper:L.callhelp);a.href='tel:'+G.phone.replace(/[^0-9+]/g,'');return a}
+function render(){m.innerHTML='';m.scrollTop=0;try{speechSynthesis.cancel()}catch(e){}MU.duck(false);
+ m.style.setProperty('--dx',(RM||!dirn?0:dirn*(rtl?-28:28))+'px');dirn=0;
+ pb.style.width=(i<0?0:Math.round(Math.min(i+1,S.length)/S.length*100))+'%';document.getElementById('pbw').setAttribute('aria-valuenow',i<0?0:Math.min(i+1,S.length));
+ if(i<0){nav.style.display='none';var c=el('div','center');c.appendChild(el('div','emoji','👋'));c.appendChild(el('h1','',G.title||L.guide));
+  if(G.forWhom)c.appendChild(el('p','',L.forw+G.forWhom));c.appendChild(el('p','',L.steps.replace('{n}',S.length)));
+  var b=el('button','big',L.start);b.onclick=function(){dirn=1;i=0;render()};c.appendChild(b);m.appendChild(c);return}
+ if(i>=S.length){nav.style.display='none';var c=el('div','center');c.appendChild(el('div','emoji','🎉'));c.appendChild(el('h1','',L.bravo));
+  var r=el('button','big alt',L.again);r.onclick=function(){i=0;render()};c.appendChild(r);var cb=callBtn();if(cb){c.appendChild(el('p','',L.fail));c.appendChild(cb)}
+  var bk=el('button','big alt',L.last);bk.onclick=function(){dirn=-1;i=S.length-1;render()};c.appendChild(bk);m.appendChild(c);confetti();return}
+ nav.style.display='';var s=S[i];m.appendChild(el('div','cnt',SO(i+1,S.length)));
+ if(s.img){var st=el('div','stage');var im=el('img');im.src=s.img;im.alt=L.img;st.appendChild(im);if(s.marker){var mk=el('div','mark');mk.style.left=s.marker.x+'%';mk.style.top=s.marker.y+'%';st.appendChild(mk)}m.appendChild(st)}
+ if(s.text)m.appendChild(el('div','txt',s.text));
+ if(s.note)m.appendChild(el('div','note','⚠️ '+s.note));
+ if(canSpeak&&(s.text||s.note)){var sp=el('button','big speak',L.read);sp.onclick=function(){say((s.text||'')+'. '+(s.note||''))};m.appendChild(sp)}
+ document.getElementById('pv').disabled=false;document.getElementById('nx').textContent=i===S.length-1?L.done:L.next}
+document.getElementById('pv').onclick=function(){dirn=-1;i--;render()};document.getElementById('nx').onclick=function(){dirn=1;i++;render()};
+document.addEventListener('keydown',function(e){var f=rtl?'ArrowLeft':'ArrowRight',b=rtl?'ArrowRight':'ArrowLeft';if(e.key===f&&i<S.length){dirn=1;i++;render()}if(e.key===b&&i>-1){dirn=-1;i--;render()}});
+var x0=null;m.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+m.addEventListener('touchend',function(e){if(x0==null||i<0||i>=S.length)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>70){dirn=((dx<0)!==rtl)?1:-1;i+=dirn;render()}x0=null});
+render();
+})();
+<\/script></body></html>`;
+}
+function play(g) {
+  if (!g.steps.some(s => s.text || s.img)) return toast('Aggiungi almeno un passo con testo o foto');
+  $('#playerLbl').textContent = 'Anteprima: così la vedrà ' + (g.forWhom || 'chi la riceve') + (glang(g) !== 'it' ? ' (in ' + langOf(glang(g)).it.toLowerCase() + ')' : '');
+  music.hold(true); lastFocus = document.activeElement;
+  $('#playerFrame').srcdoc = viewerHtml(g); $('#player').classList.add('on'); document.body.classList.add('lock');
+  setTimeout(() => $('#playerClose').focus({ preventScroll: true }), 40);
+}
+function closePlayer() {
+  $('#player').classList.remove('on'); $('#playerFrame').srcdoc = ''; music.hold(false);
+  if (!document.querySelector('.modal.on')) document.body.classList.remove('lock');
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+}
+$('#playerClose').onclick = closePlayer;
+
+/* ---------------- Condivisione / export ---------------- */
+async function shareGuide(g) {
+  if (!g.steps.some(s => s.text || s.img)) return toast('La guida è vuota');
+  const html = viewerHtml(g);
+  const name = slug(g.title) + '.html';
+  const file = new File([html], name, { type: 'text/html' });
+  const text = vs(g).share(g);
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: g.title, text }); return; }
+    catch (e) { if (e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('File scaricato: allegalo su WhatsApp come documento 📎');
+}
+
+/* Importa una guida ricevuta (file .html creato da Spiegamelo) */
+$('#btnImport').onclick = () => { $('#importFile').value = ''; $('#importFile').click(); };
+$('#importFile').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  try {
+    const txt = await f.text();
+    let data;
+    const m = txt.match(/<script type="application\/json" id="guida-dati">([\s\S]*?)<\/script>/);
+    data = JSON.parse(m ? m[1] : txt);
+    if (!data || !Array.isArray(data.steps)) throw new Error('formato');
+    const g = { id: uid(), title: data.title || '', lang: VSTR[data.lang] ? data.lang : 'it', forWhom: data.forWhom || '', device: data.device || '', helper: data.helper || '', phone: data.phone || '', created: Date.now(), updated: Date.now(),
+      steps: data.steps.map(s => ({ id: uid(), text: s.text || '', note: s.note || '', img: typeof s.img === 'string' && /^data:image\//.test(s.img) ? s.img : null, marker: s.marker && isFinite(s.marker.x) && isFinite(s.marker.y) ? { x: +s.marker.x, y: +s.marker.y } : null })) };
+    await DB.put(g); guides.unshift(g); renderHome(); toast('Guida importata ✓');
+  } catch (err) { toast('Questo file non è una guida di Spiegamelo'); }
+});
+
+/* ---------------- Stampa ---------------- */
+function printGuide(g) {
+  const steps = g.steps.filter(s => s.text || s.img);
+  if (!steps.length) return toast('La guida è vuota');
+  const L = vs(g);
+  const html = `<!DOCTYPE html><html lang="${glang(g)}" dir="${isRtl(glang(g)) ? 'rtl' : 'ltr'}"><head><meta charset="utf-8"><title>${esc(g.title)}</title><style>
+  @page{size:A4;margin:12mm}body{font-family:${FONT};color:#000;margin:0}
+  h1{font-size:30pt;margin:0 0 4pt}.sub{font-size:14pt;margin-bottom:10pt}
+  .st{display:flex;gap:14pt;align-items:center;border:2pt solid #000;border-radius:10pt;padding:10pt;margin:0 0 10pt;break-inside:avoid}
+  .n{font-size:34pt;font-weight:900;width:46pt;height:46pt;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+  .stage{direction:ltr;position:relative;line-height:0;flex:none}.stage img{height:62mm;max-width:60mm;object-fit:contain;border:1pt solid #999;border-radius:6pt}
+  .mk{position:absolute;width:22pt;height:22pt;transform:translate(-50%,-50%);border:4pt solid #e03131;border-radius:50%;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .t{font-size:20pt;font-weight:700;line-height:1.25}.nt{font-size:14pt;margin-top:6pt;padding:5pt 8pt;border:2pt dashed #000;border-radius:6pt}
+  .help{font-size:18pt;font-weight:700;border-top:3pt solid #000;padding-top:8pt;margin-top:6pt}
+  .st>div:last-child{flex:1;min-width:0}.mk{box-shadow:0 0 0 2pt #fff}
+  </style></head><body><h1>${esc(g.title || L.guide)}</h1><div class="sub">${[g.forWhom ? esc(L.forw) + esc(g.forWhom) : '', esc(g.device || '')].filter(Boolean).join(' · ')}</div>
+  ${steps.map((s, i) => `<div class="st"><div class="n">${i + 1}</div>${s.img ? `<div class="stage"><img src="${s.img}">${s.marker ? `<div class="mk" style="left:${s.marker.x}%;top:${s.marker.y}%"></div>` : ''}</div>` : ''}<div><div class="t">${esc(s.text)}</div>${s.note ? `<div class="nt">⚠ ${esc(s.note)}</div>` : ''}</div></div>`).join('')}
+  ${g.phone ? `<div class="help">📞 ${esc(helpLine(L, g))}</div>` : ''}</body></html>`;
+  const fr = $('#printFrame');
+  fr.onload = () => { setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { toast('Stampa non disponibile qui'); } }, 300); fr.onload = null; };
+  fr.srcdoc = html;
+}
+
+/* ---------------- Avvio ---------------- */
+load();
+</script>
+</body>
+</html>
