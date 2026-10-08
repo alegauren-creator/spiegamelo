@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Spiegamelo">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="description" content="Spiegamelo: crea guide passo-passo con foto e un cerchio rosso su dove toccare, per qualsiasi app o schermata (SPID, app IO, banca, Fascicolo Sanitario, TV…). Si inviano come file e funzionano anche offline.">
 <title>Spiegamelo – guide facili per chi ami</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230f766e'/%3E%3Ccircle cx='50' cy='50' r='26' fill='none' stroke='%23ff6b6b' stroke-width='8'/%3E%3Ccircle cx='50' cy='50' r='8' fill='white'/%3E%3C/svg%3E">
@@ -167,6 +171,9 @@ a.btn{text-decoration:none}
 .player.on{animation:fadeIn .22s ease-out}
 .step{animation:rise .3s ease-out}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.upd{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:90;background:#1f2933;color:#fff;border-radius:14px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 20px rgba(0,0,0,.25);width:max-content;max-width:calc(100vw - 20px);animation:updIn .3s ease-out}
+@keyframes updIn{from{opacity:0;transform:translate(-50%,-12px)}to{opacity:1;transform:translate(-50%,0)}}
+.upd .btn{flex:none}
 </style>
 </head>
 <body>
@@ -277,6 +284,7 @@ a.btn{text-decoration:none}
 <div class="player" id="player" role="dialog" aria-modal="true" aria-label="Anteprima della guida"><div class="pbar"><span id="playerLbl">Anteprima: così la vedrà</span><button class="close" id="playerClose">✕ Chiudi</button></div><iframe id="playerFrame" title="Anteprima guida"></iframe></div>
 <input type="file" id="imgFile" accept="image/*" class="hide">
 <div class="toast" id="toast"></div>
+<div class="upd hide" id="updBar" role="status"><span>È disponibile una nuova versione di Spiegamelo.</span><button class="btn sm pri" id="updBtn">Aggiorna</button></div>
 <iframe id="printFrame" class="hide" title="stampa"></iframe>
 
 <script>
@@ -846,6 +854,9 @@ document.addEventListener('keydown', e => {
   if ($('#player').classList.contains('on')) closePlayer();
 });
 /* Info e contatti */
+/* Dentro l'app Android (Trusted Web Activity) il pulsante Ko-fi non viene mostrato:
+   le regole di Google Play sui pagamenti limitano i link a donazioni esterne. Resta sul sito web. */
+const IN_ANDROID_APP = (() => { try { if (/[?&]src=twa(&|$)/.test(location.search) || document.referrer.startsWith('android-app://')) sessionStorage.setItem('sp_twa', '1'); return sessionStorage.getItem('sp_twa') === '1'; } catch (e) { return false; } })();
 function contactLinks() {
   const w = String(CONTACT.whatsapp || '').replace(/\s+/g, ''); let wa = '';
   if (/^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//i.test(w)) wa = w;
@@ -864,17 +875,18 @@ function openInfo() {
   $('#ctMail').classList.toggle('hide', !c.mail); if (c.mail) $('#ctMail').href = c.mail;
   $('#ctMailTxt').classList.toggle('hide', !c.mail); $('#ctMailTxt').textContent = c.mail ? 'Email: ' + c.em : '';
   $('#infoContact').classList.toggle('hide', !c.wa && !c.mail);
-  $('#infoKofi').classList.toggle('hide', !c.kofi); if (c.kofi) $('#ctKofi').href = c.kofi;
+  const kofi = IN_ANDROID_APP ? '' : c.kofi;
+  $('#infoKofi').classList.toggle('hide', !kofi); if (kofi) $('#ctKofi').href = kofi;
   renderPriv(); openModal($('#infoModal'));
 }
 /* Informativa privacy (testo base fornito da Alessio) nelle 5 lingue delle guide */
 const PRIVACY_URL = 'https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement';
 const PRIV = {
-  it: { h: 'Privacy', p: ['Spiegamelo non richiede un account e non raccoglie direttamente dati personali degli utenti tramite il servizio. Le informazioni e le impostazioni utilizzate dall\'app rimangono sul dispositivo. Il servizio di hosting GitHub Pages può tuttavia trattare dati tecnici, incluso l\'indirizzo IP, secondo la propria informativa sulla privacy.', 'Le guide e le foto che crei restano su questo dispositivo e vengono condivise solo se sei tu a inviarle.'], l: 'Informativa sulla privacy di GitHub (in inglese)' },
-  en: { h: 'Privacy', p: ['Spiegamelo does not require an account and does not directly collect users\' personal data through the service. The information and settings used by the app stay on the device. However, the hosting service GitHub Pages may process technical data, including the IP address, in accordance with its own privacy statement.', 'The guides and photos you create stay on this device and are shared only if you send them yourself.'], l: 'GitHub Privacy Statement' },
-  fr: { h: 'Confidentialité', p: ['Spiegamelo ne demande pas de compte et ne collecte pas directement de données personnelles des utilisateurs par le biais du service. Les informations et les réglages utilisés par l\'appli restent sur l\'appareil. Le service d\'hébergement GitHub Pages peut toutefois traiter des données techniques, y compris l\'adresse IP, conformément à sa propre déclaration de confidentialité.', 'Les guides et les photos que vous créez restent sur cet appareil et ne sont partagés que si vous les envoyez vous-même.'], l: 'Déclaration de confidentialité de GitHub (en anglais)' },
-  ar: { h: 'الخصوصية', p: ['لا يتطلب Spiegamelo إنشاء حساب، ولا يجمع بشكل مباشر أي بيانات شخصية للمستخدمين عبر الخدمة. تبقى المعلومات والإعدادات التي يستخدمها التطبيق على الجهاز. ومع ذلك، قد تعالج خدمة الاستضافة GitHub Pages بيانات تقنية، بما في ذلك عنوان IP، وفقاً لسياسة الخصوصية الخاصة بها.', 'تبقى الأدلة والصور التي تنشئها على هذا الجهاز، ولا تتم مشاركتها إلا إذا أرسلتها أنت بنفسك.'], l: 'بيان الخصوصية الخاص بـ GitHub (بالإنجليزية)' },
-  zh: { h: '隐私', p: ['Spiegamelo 不需要注册账户，也不会通过本服务直接收集用户的个人数据。应用使用的信息和设置都保存在设备上。不过，托管服务 GitHub Pages 可能会根据其自身的隐私声明处理技术数据，包括 IP 地址。', '你创建的指南和照片保存在这台设备上，只有你自己发送时才会被分享。'], l: 'GitHub 隐私声明（英文）' }
+  it: { full: 'Informativa privacy completa', h: 'Privacy', p: ['Spiegamelo non richiede un account e non raccoglie direttamente dati personali degli utenti tramite il servizio. Le informazioni e le impostazioni utilizzate dall\'app rimangono sul dispositivo. Il servizio di hosting GitHub Pages può tuttavia trattare dati tecnici, incluso l\'indirizzo IP, secondo la propria informativa sulla privacy.', 'Le guide e le foto che crei restano su questo dispositivo e vengono condivise solo se sei tu a inviarle.'], l: 'Informativa sulla privacy di GitHub (in inglese)' },
+  en: { full: 'Full privacy policy', h: 'Privacy', p: ['Spiegamelo does not require an account and does not directly collect users\' personal data through the service. The information and settings used by the app stay on the device. However, the hosting service GitHub Pages may process technical data, including the IP address, in accordance with its own privacy statement.', 'The guides and photos you create stay on this device and are shared only if you send them yourself.'], l: 'GitHub Privacy Statement' },
+  fr: { full: 'Politique de confidentialité complète (en italien et en anglais)', h: 'Confidentialité', p: ['Spiegamelo ne demande pas de compte et ne collecte pas directement de données personnelles des utilisateurs par le biais du service. Les informations et les réglages utilisés par l\'appli restent sur l\'appareil. Le service d\'hébergement GitHub Pages peut toutefois traiter des données techniques, y compris l\'adresse IP, conformément à sa propre déclaration de confidentialité.', 'Les guides et les photos que vous créez restent sur cet appareil et ne sont partagés que si vous les envoyez vous-même.'], l: 'Déclaration de confidentialité de GitHub (en anglais)' },
+  ar: { full: 'سياسة الخصوصية الكاملة (بالإيطالية والإنجليزية)', h: 'الخصوصية', p: ['لا يتطلب Spiegamelo إنشاء حساب، ولا يجمع بشكل مباشر أي بيانات شخصية للمستخدمين عبر الخدمة. تبقى المعلومات والإعدادات التي يستخدمها التطبيق على الجهاز. ومع ذلك، قد تعالج خدمة الاستضافة GitHub Pages بيانات تقنية، بما في ذلك عنوان IP، وفقاً لسياسة الخصوصية الخاصة بها.', 'تبقى الأدلة والصور التي تنشئها على هذا الجهاز، ولا تتم مشاركتها إلا إذا أرسلتها أنت بنفسك.'], l: 'بيان الخصوصية الخاص بـ GitHub (بالإنجليزية)' },
+  zh: { full: '完整隐私政策（意大利语和英语）', h: '隐私', p: ['Spiegamelo 不需要注册账户，也不会通过本服务直接收集用户的个人数据。应用使用的信息和设置都保存在设备上。不过，托管服务 GitHub Pages 可能会根据其自身的隐私声明处理技术数据，包括 IP 地址。', '你创建的指南和照片保存在这台设备上，只有你自己发送时才会被分享。'], l: 'GitHub 隐私声明（英文）' }
 };
 let privLang = 'it';
 function renderPriv() {
@@ -882,7 +894,7 @@ function renderPriv() {
   const P = PRIV[privLang], b = $('#privBody');
   b.lang = privLang; b.dir = isRtl(privLang) ? 'rtl' : 'ltr';
   $('#privTitle').textContent = '🔒 ' + P.h;
-  b.innerHTML = P.p.map(x => `<p>${esc(x)}</p>`).join('') + `<a href="${PRIVACY_URL}" target="_blank" rel="noopener">${esc(P.l)} ↗</a>`;
+  b.innerHTML = P.p.map(x => `<p>${esc(x)}</p>`).join('') + `<a href="${PRIVACY_URL}" target="_blank" rel="noopener">${esc(P.l)} ↗</a><br><a href="privacy.html${privLang === 'en' ? '#en' : ''}" target="_blank" rel="noopener" id="privFull">${esc(P.full)} ↗</a>`;
 }
 $('#privLangs').addEventListener('click', e => { const b = e.target.closest('[data-pl]'); if (b) { privLang = b.dataset.pl; renderPriv(); } });
 $('#btnInfo').onclick = openInfo; $('#btnInfo2').onclick = openInfo;
@@ -1187,6 +1199,16 @@ function printGuide(g) {
   fr.onload = () => { setTimeout(() => { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { toast('Stampa non disponibile qui'); } }, 300); fr.onload = null; };
   fr.srcdoc = html;
 }
+
+/* ---------------- App installabile (PWA) e aggiornamenti ---------------- */
+if ('serviceWorker' in navigator && window.top === window && (location.protocol === 'https:' || ['localhost', '127.0.0.1'].includes(location.hostname))) {
+  const hadController = !!navigator.serviceWorker.controller;
+  const showUpd = () => $('#updBar').classList.remove('hide');
+  navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'spiegamelo-updated') showUpd(); });
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) showUpd(); });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {}); });
+}
+$('#updBtn').onclick = () => location.reload();
 
 /* ---------------- Avvio ---------------- */
 load();
