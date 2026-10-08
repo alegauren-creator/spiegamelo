@@ -145,6 +145,9 @@ header.top .in{flex-wrap:wrap}
 .btn.wa{background:#0b6e4f;color:#fff;text-decoration:none}
 a.btn{text-decoration:none}
 .cmail{color:var(--mute);font-size:.9rem;margin:4px 0 14px;word-break:break-all}
+.kofi{border-top:1px dashed var(--line);padding-top:12px;margin:4px 0 14px}
+.kofi p{font-size:.92rem;color:var(--mute);margin:0 0 8px}
+.btn.kofibtn{background:transparent;color:var(--pri-d);border:1.5px solid var(--line);font-weight:600;min-height:44px;padding:8px 14px}
 .priv{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 14px}
 .privhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .priv h3{margin:0;font-size:1.05rem}
@@ -259,6 +262,10 @@ a.btn{text-decoration:none}
     <div class="cbtns"><a class="btn big wa hide" id="ctWa" target="_blank" rel="noopener">💬 Scrivimi su WhatsApp</a><a class="btn big pri hide" id="ctMail">✉️ Mandami un'email</a></div>
     <div class="cmail hide" id="ctMailTxt"></div>
   </div>
+  <div class="kofi hide" id="infoKofi">
+    <p>Spiegamelo è e resterà gratuita. Se ti è utile e vuoi sostenerla, puoi offrirmi un caffè.</p>
+    <a class="btn kofibtn" id="ctKofi" target="_blank" rel="noopener">☕ Offrimi un caffè</a>
+  </div>
   <section class="priv" aria-labelledby="privTitle">
     <div class="privhead"><h3 id="privTitle">🔒 Privacy</h3>
       <div class="plangs" id="privLangs" role="group" aria-label="Lingua dell'informativa sulla privacy"></div></div>
@@ -277,8 +284,9 @@ a.btn{text-decoration:none}
 /* ================= CONTATTI (da modificare qui) =================
    name: il tuo nome · email: indirizzo email
    whatsapp: link diretto (es. https://wa.me/qr/...) oppure numero (es. +39 333 1234567)
+   kofi: link della pagina Ko-fi per le donazioni (es. https://ko-fi.com/nome)
    Se un campo è vuoto (''), il relativo pulsante non viene mostrato. */
-const CONTACT = { name: 'Alessio', whatsapp: 'https://wa.me/qr/L4SHBNHXK6KGN1', email: 'aleg.auren@gmail.com' };
+const CONTACT = { name: 'Alessio', whatsapp: 'https://wa.me/qr/L4SHBNHXK6KGN1', email: 'aleg.auren@gmail.com', kofi: 'https://ko-fi.com/alessio_g' };
 
 /* Musica calma generata nel browser (Web Audio): nessun file esterno, nessun diritto d'autore. */
 function SpMusic() {
@@ -842,9 +850,11 @@ function contactLinks() {
   const w = String(CONTACT.whatsapp || '').replace(/\s+/g, ''); let wa = '';
   if (/^https:\/\/(wa\.me|api\.whatsapp\.com|chat\.whatsapp\.com)\//i.test(w)) wa = w;
   else if (w) { let d = w.replace(/\D/g, ''); if (d.startsWith('00')) d = d.slice(2); if (d.length === 10 && d[0] === '3') d = '39' + d; if (d.length >= 8) wa = 'https://wa.me/' + d; }
+  const kf = String(CONTACT.kofi || '').trim();
+  const kofi = /^https:\/\/(www\.)?ko-fi\.com\/[A-Za-z0-9_]+\/?$/i.test(kf) ? kf : '';
   const em = String(CONTACT.email || '').trim();
   const mail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em) ? 'mailto:' + em + '?subject=' + encodeURIComponent('Spiegamelo') : '';
-  return { wa, mail, em };
+  return { wa, mail, em, kofi };
 }
 function openInfo() {
   const name = String(CONTACT.name || 'Alessio').trim() || 'Alessio';
@@ -854,6 +864,7 @@ function openInfo() {
   $('#ctMail').classList.toggle('hide', !c.mail); if (c.mail) $('#ctMail').href = c.mail;
   $('#ctMailTxt').classList.toggle('hide', !c.mail); $('#ctMailTxt').textContent = c.mail ? 'Email: ' + c.em : '';
   $('#infoContact').classList.toggle('hide', !c.wa && !c.mail);
+  $('#infoKofi').classList.toggle('hide', !c.kofi); if (c.kofi) $('#ctKofi').href = c.kofi;
   renderPriv(); openModal($('#infoModal'));
 }
 /* Informativa privacy (testo base fornito da Alessio) nelle 5 lingue delle guide */
