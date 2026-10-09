@@ -298,43 +298,120 @@ const CONTACT = { name: 'Alessio', whatsapp: 'https://wa.me/qr/L4SHBNHXK6KGN1', 
 
 /* Musica calma generata nel browser (Web Audio): nessun file esterno, nessun diritto d'autore. */
 function SpMusic() {
+  /* Musica "spa": carillon/kalimba dolce su scala pentatonica (Fa maggiore), pad caldi,
+     riverbero ed eco morbidi, un filo di ruscello. Tutto generato dal browser (Web Audio). */
   var AC = window.AudioContext || window.webkitAudioContext;
-  var ctx = null, bus = null, master = null, duckG = null, timer = null, want = false, held = false, n = 0, VOL = 0.06;
-  var CH = [[48, 55, 59, 64], [45, 52, 55, 60], [41, 48, 52, 57], [43, 50, 55, 59]];
-  var HI = [72, 74, 76, 79, 81];
+  var ctx = null, G = null, timer = null, want = false, held = false, VOL = 0.06, MAKEUP = 4.5;
+  var BEAT = 0.8, BAR = BEAT * 8, nextBar = 0, bar = 0, pos = 5;
+  var SC = [62, 65, 67, 69, 72, 74, 77, 79, 81, 84];
+  var CH = [
+    { p: [53, 60, 64, 69], b: 41, t: [65, 69, 72, 77, 81, 84] },
+    { p: [50, 57, 60, 65], b: 38, t: [62, 65, 69, 72, 74, 77, 81] },
+    { p: [58, 62, 65, 69], b: 46, t: [62, 65, 69, 74, 77, 81] },
+    { p: [48, 55, 62, 65], b: 48, t: [67, 72, 74, 79, 84] },
+    { p: [58, 62, 65, 69], b: 46, t: [62, 65, 69, 74, 77, 81] },
+    { p: [53, 60, 64, 69], b: 41, t: [65, 69, 72, 77, 81, 84] },
+    { p: [50, 57, 60, 65], b: 38, t: [62, 65, 69, 72, 74, 77, 81] },
+    { p: [48, 55, 64, 67], b: 48, t: [67, 72, 79, 84] }
+  ];
+  var RH = [[0, 1, 2, 4], [0, 2, 3, 4, 6], [0, 1.5, 2, 3, 5], [0, 1, 2, 3, 4, 6], [1, 2, 4, 5], [0, 3, 4, 6], [0, 2, 4]];
   function hz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function rnd(a) { return a[Math.floor(Math.random() * a.length)]; }
   function active() { return !(navigator.userActivation && !navigator.userActivation.hasBeenActive); }
+  function impulse(c, dur) {
+    var sr = c.sampleRate, len = Math.floor(sr * dur), buf = c.createBuffer(2, len, sr);
+    for (var ch = 0; ch < 2; ch++) {
+      var d = buf.getChannelData(ch), y = 0;
+      for (var i = Math.floor(sr * 0.02); i < len; i++) {
+        var k = i / len, a = 0.55 - 0.4 * k;
+        y += a * ((Math.random() * 2 - 1) - y);
+        d[i] = y * Math.exp(-5.5 * k) * (1 - k);
+      }
+    }
+    return buf;
+  }
+  function build(c) {
+    var o = {};
+    // mix (livellamento fisso) -> master (volume basso, sfumature) -> duck (abbassa durante Leggimelo) -> uscita
+    o.mix = c.createGain(); o.mix.gain.value = MAKEUP; o.master = c.createGain(); o.master.gain.value = 0; o.duck = c.createGain(); o.duck.gain.value = 1;
+    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 90; hp.Q.value = 0.5; // niente rimbombo
+    o.mix.connect(hp); hp.connect(o.master); o.master.connect(o.duck); o.duck.connect(c.destination);
+    var rev = c.createConvolver(); rev.buffer = impulse(c, 3.6); var wet = c.createGain(); wet.gain.value = 0.9; rev.connect(wet); wet.connect(o.mix);
+    // carillon
+    var mel = c.createBiquadFilter(); mel.type = 'lowpass'; mel.frequency.value = 3600; mel.Q.value = 0.3;
+    var md = c.createGain(); md.gain.value = 0.75; mel.connect(md); md.connect(o.mix);
+    var ms = c.createGain(); ms.gain.value = 0.55; mel.connect(ms); ms.connect(rev);
+    var dl = c.createDelay(3); dl.delayTime.value = BEAT * 1.5; var fb = c.createGain(); fb.gain.value = 0.3;
+    var dlf = c.createBiquadFilter(); dlf.type = 'lowpass'; dlf.frequency.value = 2000; var dw = c.createGain(); dw.gain.value = 0.2;
+    mel.connect(dl); dl.connect(dlf); dlf.connect(fb); fb.connect(dl); dlf.connect(dw);
+    if (c.createStereoPanner) { var pn = c.createStereoPanner(); pn.pan.value = 0.45; dw.connect(pn); pn.connect(o.mix); } else dw.connect(o.mix);
+    o.mel = mel;
+    // pad caldi
+    var pad = c.createBiquadFilter(); pad.type = 'lowpass'; pad.frequency.value = 850; pad.Q.value = 0.4;
+    var pd = c.createGain(); pd.gain.value = 0.8; pad.connect(pd); pd.connect(o.mix);
+    var ps = c.createGain(); ps.gain.value = 0.5; pad.connect(ps); ps.connect(rev);
+    o.pad = pad;
+    // ruscello lontano (rumore morbido filtrato, che si muove piano)
+    try {
+      var sr = c.sampleRate, n = Math.floor(sr * 6), nb = c.createBuffer(1, n, sr), w = nb.getChannelData(0), last = 0, X = Math.floor(sr * 0.5);
+      for (var i = 0; i < n; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; w[i] = last * 3.5; }
+      for (i = 0; i < X; i++) { var f = i / X; w[n - X + i] = w[n - X + i] * (1 - f) + w[i] * f; }
+      var src = c.createBufferSource(); src.buffer = nb.length ? nb : null; src.loop = true; src.loopStart = X / sr; src.loopEnd = n / sr;
+      var bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900; bp.Q.value = 0.8;
+      var lf = c.createOscillator(), lg = c.createGain(); lf.frequency.value = 0.09; lg.gain.value = 350; lf.connect(lg); lg.connect(bp.frequency);
+      var wg = c.createGain(); wg.gain.value = 0.05; o.water = wg; src.connect(bp); bp.connect(wg); wg.connect(o.mix); wg.connect(rev);
+      src.start(0); lf.start(0);
+    } catch (e) {}
+    return o;
+  }
+  function note(c, g, m, t, v) {
+    var f = hz(m), parts = [[1, 1, 2.6], [2, 0.22, 0.9], [3, 0.07, 0.35], [5.4, 0.025, 0.12]];
+    for (var i = 0; i < parts.length; i++) {
+      var o = c.createOscillator(), e = c.createGain(), p = parts[i], pk = 0.2 * v * p[1];
+      o.type = 'sine'; o.frequency.value = f * p[0];
+      e.gain.setValueAtTime(0.0001, t); e.gain.exponentialRampToValueAtTime(pk, t + 0.006); e.gain.exponentialRampToValueAtTime(0.0001, t + p[2]);
+      o.connect(e); e.connect(g.mel); o.start(t); o.stop(t + p[2] + 0.05);
+    }
+  }
+  function padVoice(c, g, m, t, len, pk, type, solo) {
+    for (var d = solo ? 0 : -1; d <= (solo ? 0 : 1); d += 2) {
+      var o = c.createOscillator(), e = c.createGain(); o.type = type; o.frequency.value = hz(m);
+      if (o.detune) o.detune.value = d * 4;
+      e.gain.setValueAtTime(0.0001, t); e.gain.linearRampToValueAtTime(pk, t + 2.2);
+      e.gain.setValueAtTime(pk, t + len); e.gain.linearRampToValueAtTime(0.0001, t + len + 2.6);
+      o.connect(e); e.connect(g.pad); o.start(t); o.stop(t + len + 2.7);
+    }
+  }
+  function scheduleBar(c, g, t0, b) {
+    var C = CH[b % CH.length];
+    for (var i = 0; i < C.p.length; i++) padVoice(c, g, C.p[i], t0, BAR - 0.4, 0.012, 'sine');
+    padVoice(c, g, C.b, t0, BAR - 0.4, 0.022, 'triangle', true);
+    var r = (b % 4 === 3) ? rnd([[0, 2], [0, 3], [1, 4]]) : rnd(RH), last = 0;
+    for (var k = 0; k < r.length; k++) {
+      var end = k === r.length - 1;
+      if (end) { var best = pos, bd = 99; for (var j = 0; j < SC.length; j++) if (C.t.indexOf(SC[j]) >= 0 && Math.abs(j - pos) < bd) { bd = Math.abs(j - pos); best = j; } pos = best; }
+      else { pos += rnd([-1, -1, 1, 1, -2, 2, 0]); if (pos < 1) pos = 2; if (pos > 8) pos = 7; }
+      var t = t0 + r[k] * BEAT + (Math.random() - 0.5) * 0.03, v = k === 0 ? 1 : 0.65 + Math.random() * 0.25;
+      note(c, g, SC[pos], t, v); last = t;
+    }
+    if (Math.random() < 0.3 && SC[pos] + 12 <= 96) note(c, g, SC[pos] + 12, last + BEAT * 0.5, 0.3);
+  }
+  function tick() { if (!ctx || ctx.state !== 'running') return; while (nextBar < ctx.currentTime + 0.6) { scheduleBar(ctx, G, nextBar, bar++); nextBar += BAR; } }
   function init() {
     if (ctx) return true; if (!AC || !active()) return false;
-    try { ctx = new AC(); } catch (e) { return false; }
-    master = ctx.createGain(); master.gain.value = 0; duckG = ctx.createGain(); duckG.gain.value = 1;
-    var lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400; lp.Q.value = 0.3;
-    var dl = ctx.createDelay(2); dl.delayTime.value = 0.42; var fb = ctx.createGain(); fb.gain.value = 0.3; var wet = ctx.createGain(); wet.gain.value = 0.35;
-    lp.connect(master); lp.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(master);
-    master.connect(duckG); duckG.connect(ctx.destination); bus = lp; return true;
-  }
-  function voice(m, t, len, peak, type) {
-    var o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = hz(m);
-    if (o.detune) o.detune.value = (Math.random() - 0.5) * 10;
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + len * 0.35); g.gain.linearRampToValueAtTime(0.0001, t + len);
-    o.connect(g); g.connect(bus); o.start(t); o.stop(t + len + 0.05);
-  }
-  function chord() {
-    if (!ctx || ctx.state !== 'running') return;
-    var t = ctx.currentTime + 0.05, c = CH[n % CH.length]; n++;
-    for (var k = 0; k < c.length; k++) voice(c[k], t, 10, k ? 0.05 : 0.07, k ? 'sine' : 'triangle');
-    if (Math.random() < 0.7) voice(HI[Math.floor(Math.random() * HI.length)], t + 2 + Math.random() * 3, 4, 0.02, 'sine');
+    try { ctx = new AC(); G = build(ctx); } catch (e) { ctx = null; return false; }
+    return true;
   }
   function ramp(g, v, s) { var t = ctx.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(v, t + s); }
   function ok() { return want && !held && !document.hidden; }
   function resume() {
     if (!ok() || !init()) return;
-    var go = function () { if (!ok() || ctx.state !== 'running') return; ramp(master, VOL, 2.5); if (!timer) { chord(); timer = setInterval(chord, 7000); } };
+    var go = function () { if (!ok() || ctx.state !== 'running') return; ramp(G.master, VOL, 2.5); if (!timer) { nextBar = Math.max(nextBar, ctx.currentTime + 0.1); tick(); timer = setInterval(tick, 300); } };
     var p = ctx.state === 'running' ? null : ctx.resume();
     if (p && p.then) p.then(go, function () {}); else go();
   }
   function pause() {
-    clearInterval(timer); timer = null; if (!ctx) return; ramp(master, 0, 0.8);
+    clearInterval(timer); timer = null; if (!ctx) return; ramp(G.master, 0, 0.8);
     setTimeout(function () { if (!ok() && ctx.state === 'running' && ctx.suspend) ctx.suspend(); }, 900);
   }
   function gesture() { if (ok() && (!ctx || ctx.state !== 'running')) resume(); }
@@ -344,9 +421,17 @@ function SpMusic() {
   return {
     set: function (b) { want = !!b; if (want) resume(); else pause(); },
     hold: function (b) { held = !!b; if (held) pause(); else resume(); },
-    duck: function (b) { if (ctx) ramp(duckG, b ? 0.1 : 1, b ? 0.3 : 1.2); },
+    duck: function (b) { if (ctx) ramp(G.duck, b ? 0.1 : 1, b ? 0.3 : 1.2); },
     get on() { return want; },
-    dbg: function () { return { state: ctx ? ctx.state : 'none', master: master ? master.gain.value : 0, duck: duckG ? duckG.gain.value : 1, playing: !!timer, want: want, held: held }; }
+    dbg: function () { return { state: ctx ? ctx.state : 'none', master: G ? G.master.gain.value : 0, duck: G ? G.duck.gain.value : 1, playing: !!timer, want: want, held: held }; },
+    // Registra un campione (stesso motore) senza riprodurlo: usato solo per l'anteprima audio.
+    render: function (sec, vol, only) {
+      var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext, sr = 44100, c = new OC(2, Math.ceil(sr * sec), sr), g = build(c), t = 0.1, b = 0;
+      g.master.gain.value = vol || VOL; pos = 5;
+      if (only) { var sink = c.createGain(); sink.gain.value = 0; if (only !== 'water' && g.water) g.water.gain.value = 0; if (only !== 'mel') { g.mel = sink; } if (only !== 'pad') { g.pad = sink; } }
+      while (t < sec) { scheduleBar(c, g, t, b++); t += BAR; }
+      return c.startRendering();
+    }
   };
 }
 
